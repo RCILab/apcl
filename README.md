@@ -23,9 +23,10 @@ For an extracted release ZIP, run `python -B preview.py` instead.
 - An interactive illustration of contact ambiguity across force directions.
 - A 30-second film with a 0.9 kg suspended load, attachment-point close-ups,
   recorded particle distributions, English and Korean captions, and an MP4 download.
-- Revised results for all 1,200 trials and the 556 trials accepted by the frozen trust gate.
-- A separate 288-trial added-mass reference study.
-- **Read Paper** and **Supplementary** links in the hero and resources section.
+- Revised results for all 1,200 trials and the 675 trials accepted by the frozen trust gate, including D3 alone.
+- Active-view, physical-contact, and parameter-sensitivity study summaries.
+- A 288-trial added-mass reference study, with its 97 gate-accepted trials reported separately.
+- **Read Paper** links to the current anonymous manuscript, including Appendix A.
 - Code and data marked **TBD**, with no active download links.
 
 ## Evidence and scope
@@ -57,31 +58,36 @@ point, nor the suspended mass as prior information. Settling checks use the
 simulated load angle, speed, and tension. Final errors in this illustrative
 episode are 22.5 mm for CPF and 8.7 mm for APCL.
 
-Hardware validation is pending. The main and added-mass reruns are complete;
-physical-contact, gate, batch, and sensitivity reruns are still in progress.
-The gate subset uses the previously frozen 0.87 threshold, not a newly validated gate.
-The downloadable manuscript and supplementary PDFs are snapshots from the previous
-analysis, explicitly labeled on the page. The source manuscript currently mixes
-revised main/added-mass numbers with earlier results for the pending reruns.
-Red hardware text describes planned results, not completed measurements.
+The main, added-mass, physical-contact, gate, and sensitivity simulation runs are
+complete. Their numerical results remain provisional while an estimator consistency
+check is open: changing the force-variation scale may require a corresponding
+importance-weight correction. Hardware validation is pending. Red hardware text
+in the manuscript describes planned values, not completed measurements.
+
+The gate threshold is read from the current `paper_numbers.json` analysis (about
+1.15), and accepted subsets are recomputed from the trial records. In the
+added-mass study, the gate-accepted subset has poorer position accuracy and
+particle-ball coverage than the all-trial population. Both are shown; passing
+the contact-free residual check does not guarantee final localization accuracy.
 
 From this directory, run `python -B tools/prepare_results.py` to regenerate the
-local summary, embedded JavaScript statistics, and HTML fallback values from the
-three complete study files. It rejects missing seeds or failed trials and does
-not publish raw data or create code/data download archives.
+local summary, embedded JavaScript statistics, HTML fallback values, and the
+manuscript PDF. It requires complete main, regularized-PF, added-mass, contact,
+sensitivity, and gate files, plus the current paper analysis. It rejects missing
+seeds or failed trials and does not publish raw data or create code/data archives.
 
 ## Updating the PDFs
 
-The published files are copies of the manuscript PDFs:
+The published file is a copy of the current manuscript:
 
 | Source | Website file |
 | --- | --- |
 | `../paper/main.pdf` | `static/papers/apcl.pdf` |
-| `../paper/supplementary.pdf` | `static/papers/apcl-supplementary.pdf` |
 
-When replacing a PDF, also update its page count and link version in `index.html`.
-The link version uses the first 12 characters of the file's SHA-256 hash.
-Both PDFs are tracked in Git and included in the release ZIPs.
+`prepare_results.py` copies the PDF and updates its page count and link version.
+The version uses the first 12 characters of the file's SHA-256 hash.
+The PDF is tracked in Git and included in the release ZIPs. The obsolete batch
+supplement is no longer published; the current manuscript includes Appendix A.
 
 ## Regenerating media
 
@@ -113,8 +119,8 @@ force-arrow film; use `prepare_tether_media.py` for the current film.
 ## Packaging and hosting
 
 Run `python -B tools/package_site.py` from this directory to create `apcl-site.zip`
-and an identical `apcl-review.zip`. Each contains the page, public assets, both
-PDFs, documentation, and a standalone `preview.py` server.
+and an identical `apcl-review.zip`. Each contains the page, public assets, the
+manuscript PDF, documentation, and a standalone `preview.py` server.
 
 Local data and download folders (`static/data/` and `static/downloads/`) are
 excluded from Git and both ZIPs while their release status is TBD. The ZIPs also

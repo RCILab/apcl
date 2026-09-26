@@ -3,15 +3,17 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import shutil
 from pathlib import Path
 
 import numpy as np
+import pymupdf
 from scipy.stats import beta
 
 ROOT = Path(__file__).resolve().parents[2]
 SITE = ROOT / "apcl"
 OUT = SITE / "static/data"
-VARIANTS = ("rpf", "none", "full")
+VARIANTS = ("rpf", "none", "d3", "full")
 
 
 def load_complete(name, seeds):
@@ -69,13 +71,25 @@ def main():
     rows, main_source = load_complete("main.jsonl", range(10000, 11200))
     old, rpf_source = load_complete("main_rpf.jsonl", range(10000, 11200))
     plates, plate_source = load_complete("plate.jsonl", range(90000, 90288))
+    contacts, contact_source = load_complete("contact.jsonl", range(70000, 70300))
+    sensitivity, sensitivity_source = load_complete("sens.jsonl", range(60000, 60300))
+    _, gate_source = load_complete("gate.jsonl", range(40000, 41000))
+    numbers_path = ROOT / "claude_try/results/paper_numbers.json"
+    numbers_raw = numbers_path.read_bytes()
+    numbers = json.loads(numbers_raw)
+    numbers_source = {"file": "claude_try/results/paper_numbers.json",
+                      "sha256": hashlib.sha256(numbers_raw).hexdigest()}
+    threshold = numbers["gate"]["gamma"]
     for row, previous in zip(rows, old):
         assert row["seed"] == previous["seed"]
         for key in ("c_stat", "theta", "m_true"):
             assert np.allclose(row[key], previous[key], rtol=0, atol=1e-12), (row["seed"], key)
         row["res"]["rpf"] = previous["res"]["none"]
-    accepted = [r for r in rows if r["c_stat"] <= .87]
-    accepted_plate = [r for r in plates if r["c_stat"] <= .87]
+        row["res"]["d3"] = row["res"]["D3loa"]
+    accepted = [r for r in rows if r["c_stat"] <= threshold]
+    accepted_plate = [r for r in plates if r["c_stat"] <= threshold]
+    assert len(accepted) == numbers["gate_pass"]["n"]
+    assert len(accepted_plate) == numbers["plate_gate"]["n_pass"]
     results = {
         name: {v: metrics([r["res"][v] for r in population]) for v in VARIANTS}
         for name, population in (("all", rows), ("accepted", accepted))
@@ -84,11 +98,22 @@ def main():
         v: metrics([r["res"][source] for r in plates])
         for v, source in (("full", "plate_full"), ("none", "plate_none"), ("random", "plate_random"))
     }
-    gate = {"threshold": .87, "accepted": len(accepted), "total": len(rows),
+    plate["accepted"] = metrics([r["res"]["plate_full"] for r in accepted_plate])
+    active = {
+        v: {"p95_two_views_mm": float(np.percentile([r["res"][v]["log"][1]["err"] for r in rows], 95)*1000),
+            "mean_views": float(np.mean([r["res"][v]["views"] for r in rows]))}
+        for v in ("full", "full_random")
+    }
+    for v in active:
+        assert np.isclose(active[v]["p95_two_views_mm"], numbers["budget"]["2"][v]["p95"])
+    contact = metrics([r["res"]["fol_tcp"] for r in contacts])
+    sens = {v: metrics([r["res"][v] for r in sensitivity]) for v in sensitivity[0]["res"]}
+    extra = {"active": active, "contact": contact, "sensitivity": sens}
+    gate = {"threshold": threshold, "accepted": len(accepted), "total": len(rows),
             "plate_accepted": len(accepted_plate), "plate_total": len(plates)}
     summary = {
-        "sources": [main_source, rpf_source, plate_source],
-        "scope": "Completed revised main and added-mass runs; gate subsets use the previously frozen threshold.",
+        "sources": [main_source, rpf_source, plate_source, contact_source, sensitivity_source, gate_source, numbers_source],
+        "scope": "Current simulation runs; numerical validation is provisional pending an estimator consistency check. Hardware measurements are pending.",
         "gate": gate,
         "definitions": {
             "cbw": "95% particle radius < 10 mm AND true error > 20 mm",
@@ -98,9 +123,10 @@ def main():
             "interval": "two-sided 95% Clopper-Pearson interval for the observed CBW proportion",
             "rpf": "archived regularized PF without recovery; identical seeds and Phase 1",
             "none": "revised CPF with Metropolis-Hastings moves, without recovery",
+            "d3": "revised CPF with MH moves and information-triggered line-of-action recovery only",
             "full": "revised CPF with Metropolis-Hastings moves and D1/D2/D3 recovery",
         },
-        **results, "plate": plate,
+        **results, "plate": plate, "additional": extra,
     }
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT/"results.json").write_text(json.dumps(summary, indent=2)+"\n", encoding="utf-8")
@@ -110,6 +136,7 @@ def main():
     block += "const results = " + json.dumps(results, indent=2) + ";\n"
     block += "const plateResults = " + json.dumps(plate, indent=2) + ";\n"
     block += "const studyGate = " + json.dumps(gate) + ";\n"
+    block += "const additionalStudies = " + json.dumps(extra, indent=2) + ";\n"
     block += "// END GENERATED RESULTS"
     js = replace_once(js, r"// BEGIN GENERATED RESULTS.*?// END GENERATED RESULTS", block)
     js_path.write_text(js, encoding="utf-8", newline="\n")
@@ -126,7 +153,7 @@ def main():
             ("ball", f'{r["ball_coverage_pct"]:.1f}%'),
         ):
             html = html_value(html, f"table-{v}-{suffix}", value)
-        if v == "rpf":
+        if v not in ("none", "full"):
             continue
         html = html_value(html, f"p95-{v}", f'{r["p95_mm"]:.1f} <small>mm</small>')
         html = html_value(html, f"cbw-{v}", f'{r["cbw_pct"]:.2f}<small>%</small>')
@@ -153,6 +180,45 @@ def main():
         f'<strong>Uncertainty still needs calibration.</strong> APCL\u2019s 95% ellipsoid covered the truth in '
         f'{b["coverage_pct"]:.1f}% of all trials; its 95% particle ball covered '
         f'{b["ball_coverage_pct"]:.1f}%. Both remain below the nominal 95% level. Hardware validation is pending.')
+    h = numbers["gate"]["heldout"]
+    html = html_value(html, "gate-note",
+        f'The threshold fixed on a separate derivation set (c ≤ {threshold:.2f}) accepts '
+        f'{len(accepted):,} / {len(rows):,} main-study trials. On the held-out gate study, '
+        f'{h["adm_invalid"]} / {h["n_invalid"]} invalid models and {h["valid_acc"]} / {h["n_valid"]} valid models were admitted. Trial records: TBD.')
+    d3 = results["all"]["d3"]
+    html = html_value(html, "d3-note",
+        f'Across all {len(rows):,} trials, line-of-action recovery alone (D3) reached a p95 error of '
+        f'{d3["p95_mm"]:.1f} mm with {d3["cbw_count"]} CBW events, similar to the complete method. '
+        'D1 and D2 are auxiliary rules; these results do not establish an additional accuracy gain from combining all three.')
+    html = html_value(html, "active-summary",
+        f'<strong>{active["full"]["p95_two_views_mm"]:.1f} vs {active["full_random"]["p95_two_views_mm"]:.1f} mm</strong>'
+        '<span>p95 after two views · active vs random</span>')
+    html = html_value(html, "active-details",
+        f'With recovery on in {len(rows):,} paired trials, active selection used '
+        f'{active["full"]["mean_views"]:.2f} views on average, compared with {active["full_random"]["mean_views"]:.2f} for random selection.')
+    html = html_value(html, "contact-summary",
+        f'<strong>{contact["median_mm"]:.1f} mm / {contact["p95_mm"]:.1f} mm</strong><span>median / p95 position error</span>')
+    html = html_value(html, "contact-details",
+        f'A following spherical pusher generated force through MuJoCo contact dynamics. '
+        f'{contact["cbw_count"]} CBW events in {contact["n"]:,} simulated trials; hardware validation is pending.')
+    p95 = [r["p95_mm"] for r in sens.values()]
+    html = html_value(html, "sensitivity-summary",
+        f'<strong>{min(p95):.1f}–{max(p95):.1f} mm</strong><span>p95 across tested parameter settings</span>')
+    html = html_value(html, "sensitivity-details",
+        f'{len(sensitivity):,} matched trials per setting varied the re-supply fraction, information threshold, and persistence. '
+        f'{sum(r["cbw_count"] for r in sens.values())} CBW events across the tested settings.')
+    html = html_value(html, "plate-gate-note",
+        f'The gate admits {len(accepted_plate)} / {len(plates)} reference trials. Their median error is '
+        f'{plate["accepted"]["median_mm"]:.1f} mm and particle-ball coverage is {plate["accepted"]["ball_coverage_pct"]:.1f}%. '
+        'Passing the contact-free residual check does not guarantee lower position error or calibrated coverage in this protocol.')
+    paper = ROOT / "paper/main.pdf"
+    paper_raw = paper.read_bytes()
+    paper_hash = hashlib.sha256(paper_raw).hexdigest()[:12]
+    with pymupdf.open(paper) as pdf:
+        page_count = len(pdf)
+    shutil.copyfile(paper, SITE / "static/papers/apcl.pdf")
+    html = re.sub(r'static/papers/apcl\.pdf\?v=[a-f0-9]+', f'static/papers/apcl.pdf?v={paper_hash}', html)
+    html = re.sub(r'PDF · Draft · \d+ pages', f'PDF · Draft · {page_count} pages', html)
     html_path.write_text(html, encoding="utf-8", newline="\n")
     print(json.dumps({"main": results["all"], "gate": gate, "plate": plate}, indent=2))
 

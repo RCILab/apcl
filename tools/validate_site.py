@@ -5,6 +5,7 @@ from html.parser import HTMLParser
 import json
 from pathlib import Path
 from urllib.parse import urlsplit, unquote
+import pymupdf
 from playwright.async_api import async_playwright
 
 SITE=Path(__file__).resolve().parents[1]
@@ -44,6 +45,16 @@ async def main():
     for source in data['sources']:
         raw=(SITE.parent/source['file']).read_bytes()
         assert hashlib.sha256(raw).hexdigest()==source['sha256'],source['file']
+    paper=SITE/'static/papers/apcl.pdf'
+    assert paper.read_bytes()==(SITE.parent/'paper/main.pdf').read_bytes()
+    paper_hash=hashlib.sha256(paper.read_bytes()).hexdigest()[:12]
+    html=(SITE/'index.html').read_text(encoding='utf-8')
+    assert html.count(f'static/papers/apcl.pdf?v={paper_hash}')==2
+    assert 'apcl-supplementary.pdf' not in html
+    assert not (SITE/'static/papers/apcl-supplementary.pdf').exists()
+    with pymupdf.open(paper) as doc:
+        assert f'PDF · Draft · {len(doc)} pages' in html
+        assert not any(name in (doc[0].get_text()+doc[1].get_text()) for name in ('Juchan Lee','Sanghyun Kim','Kyung Hee'))
     episode=json.loads((SITE/'static/data/tether_episode.json').read_text(encoding='utf-8'))
     verification=json.loads((SITE/'static/data/tether_verification.json').read_text(encoding='utf-8'))
     media=json.loads((SITE/'static/data/tether_media.json').read_text(encoding='utf-8'))
@@ -94,7 +105,7 @@ async def main():
         for population in ('all','accepted'):
             assert embedded[population]==data[population],population
             await page.locator(f'[data-population={population}]').click()
-            for variant in ('rpf','none','full'):
+            for variant in ('rpf','none','d3','full'):
                 row=data[population][variant]
                 expected={
                     'median':f"{row['median_mm']:.1f} mm",'p95':f"{row['p95_mm']:.1f} mm",
@@ -104,14 +115,16 @@ async def main():
                 for field,value in expected.items():
                     assert await page.locator(f'#table-{variant}-{field}').inner_text()==value,(population,variant,field)
         await page.locator('[data-population=accepted]').click()
-        assert await page.locator('#table-full-cbw').inner_text()=='0 / 556'
-        assert await page.locator('#table-full-ball').inner_text()=='94.1%'
+        assert await page.locator('#table-full-cbw').inner_text()=='0 / 675'
+        assert await page.locator('#table-full-ball').inner_text()=='93.5%'
+        assert '1.15' in await page.locator('#population-note').inner_text()
         assert await page.locator('#cbw-none-bar').evaluate('(e)=>parseFloat(e.style.getPropertyValue("--bar-width"))')<100
         await page.locator('[data-population=all]').click()
         assert await page.locator('#table-full-cbw').inner_text()=='0 / 1,200'
         assert '0.00–0.31%' in await page.locator('#zero-note').inner_text()
         assert await page.locator('#cbw-full-bar').evaluate('(e)=>e.getBoundingClientRect().width')==0
         assert await page.evaluate('plateResults')==data['plate']
+        assert await page.evaluate('additionalStudies')==data['additional']
         for variant,row in data['plate'].items():
             expected={
                 'median':f"{row['median_mm']:.1f} mm",'p95':f"{row['p95_mm']:.1f} mm",
@@ -120,8 +133,14 @@ async def main():
             }
             for field,value in expected.items():
                 assert await page.locator(f'#plate-{variant}-{field}').inner_text()==value,(variant,field)
+        assert await page.locator('#plate-accepted-ball').inner_text()=='67.0%'
+        assert '24.5 vs 34.0 mm' in await page.locator('#active-summary').inner_text()
+        assert '7.0 mm / 19.1 mm' in await page.locator('#contact-summary').inner_text()
+        assert '18.2–19.5 mm' in await page.locator('#sensitivity-summary').inner_text()
+        assert 'provisional' in await page.locator('#validation-note').inner_text()
         await page.locator('#results').screenshot(path=str(out/'results.png'))
-        checks.append('three main baselines, both populations, both coverage definitions, added-mass results, exact CBW interval and zero-width bars match source summary')
+        await page.locator('#supporting-studies').screenshot(path=str(out/'supporting-studies.png'))
+        checks.append('four main variants, both populations, both coverage definitions, added-mass subset, three additional studies, exact CBW interval and zero-width bars match source summary')
 
         await page.locator('#view-angle').fill('0')
         assert 'Parallel' in await page.locator('#geometry-note').inner_text()
@@ -164,7 +183,7 @@ async def main():
         direct=await browser.new_page()
         await direct.goto((SITE/'index.html').as_uri())
         await direct.locator('[data-population=accepted]').click()
-        assert await direct.locator('#table-full-p95').inner_text()=='13.0 mm'
+        assert await direct.locator('#table-full-p95').inner_text()=='14.0 mm'
         checks.append('direct file opening retains interactive results')
         nojs=await browser.new_context(java_script_enabled=False)
         static=await nojs.new_page()
@@ -172,8 +191,10 @@ async def main():
         assert await static.locator('#table-full-p95').inner_text()=='21.0 mm'
         assert await static.locator('#table-full-cbw').inner_text()=='0 / 1,200'
         assert await static.locator('#plate-full-p95').inner_text()=='31.5 mm'
-        assert 'predate this result update' in await static.locator('#resources').inner_text()
-        checks.append('HTML fallback matches revised results without JavaScript; PDF snapshot status is visible')
+        assert await static.locator('#table-d3-ball').inner_text()=='88.2%'
+        assert '7.0 mm / 19.1 mm' in await static.locator('#contact-summary').inner_text()
+        assert 'planned, not measured' in await static.locator('#resources').inner_text()
+        checks.append('HTML fallback matches revised results without JavaScript; current anonymous PDF matches source; hardware placeholders and provisional numerical status are visible')
         await browser.close()
     assert not errors,errors
     assert not bad_responses,bad_responses

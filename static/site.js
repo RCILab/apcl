@@ -111,6 +111,21 @@ const results = {
       "over20_pct": 8.0,
       "mean_views": 4.0216666666666665
     },
+    "d3": {
+      "n": 1200,
+      "median_mm": 5.476042852032467,
+      "p95_mm": 20.72640613886362,
+      "cbw_count": 0,
+      "cbw_pct": 0.0,
+      "cbw_ci_pct": [
+        0.0,
+        0.30693461081002843
+      ],
+      "coverage_pct": 83.83333333333334,
+      "ball_coverage_pct": 88.25,
+      "over20_pct": 5.5,
+      "mean_views": 4.135
+    },
     "full": {
       "n": 1200,
       "median_mm": 5.452601939483614,
@@ -129,49 +144,64 @@ const results = {
   },
   "accepted": {
     "rpf": {
-      "n": 556,
-      "median_mm": 8.706864165745035,
-      "p95_mm": 150.31253174274627,
-      "cbw_count": 139,
-      "cbw_pct": 25.0,
+      "n": 675,
+      "median_mm": 8.743746677208684,
+      "p95_mm": 148.4160035924204,
+      "cbw_count": 155,
+      "cbw_pct": 22.962962962962962,
       "cbw_ci_pct": [
-        21.45176669797294,
-        28.816317263213847
+        19.839924854717726,
+        26.324437089742815
       ],
-      "coverage_pct": 64.38848920863309,
-      "ball_coverage_pct": 63.66906474820144,
-      "over20_pct": 26.43884892086331,
-      "mean_views": 3.9928057553956835
+      "coverage_pct": 64.88888888888889,
+      "ball_coverage_pct": 64.44444444444444,
+      "over20_pct": 25.185185185185183,
+      "mean_views": 4.054814814814815
     },
     "none": {
-      "n": 556,
-      "median_mm": 5.508332017501243,
-      "p95_mm": 20.406251377131735,
-      "cbw_count": 26,
-      "cbw_pct": 4.676258992805756,
+      "n": 675,
+      "median_mm": 5.5896008500421015,
+      "p95_mm": 20.446879775204945,
+      "cbw_count": 27,
+      "cbw_pct": 4.0,
       "cbw_ci_pct": [
-        3.0770908690912298,
-        6.7769771723568475
+        2.65228668210453,
+        5.766650710918348
       ],
-      "coverage_pct": 77.6978417266187,
-      "ball_coverage_pct": 78.41726618705036,
-      "over20_pct": 5.39568345323741,
-      "mean_views": 3.6384892086330933
+      "coverage_pct": 79.11111111111111,
+      "ball_coverage_pct": 80.0,
+      "over20_pct": 5.481481481481482,
+      "mean_views": 3.725925925925926
     },
-    "full": {
-      "n": 556,
-      "median_mm": 4.27009958777513,
-      "p95_mm": 13.034622822661538,
+    "d3": {
+      "n": 675,
+      "median_mm": 4.454824669996442,
+      "p95_mm": 14.1899932965479,
       "cbw_count": 0,
       "cbw_pct": 0.0,
       "cbw_ci_pct": [
         0.0,
-        0.6612714413739798
+        0.5450100616251372
       ],
-      "coverage_pct": 91.36690647482014,
-      "ball_coverage_pct": 94.06474820143885,
-      "over20_pct": 1.079136690647482,
-      "mean_views": 3.816546762589928
+      "coverage_pct": 89.92592592592594,
+      "ball_coverage_pct": 93.92592592592592,
+      "over20_pct": 1.7777777777777777,
+      "mean_views": 3.8696296296296295
+    },
+    "full": {
+      "n": 675,
+      "median_mm": 4.390999302209292,
+      "p95_mm": 14.02328280751523,
+      "cbw_count": 0,
+      "cbw_pct": 0.0,
+      "cbw_ci_pct": [
+        0.0,
+        0.5450100616251372
+      ],
+      "coverage_pct": 90.22222222222223,
+      "ball_coverage_pct": 93.48148148148148,
+      "over20_pct": 1.925925925925926,
+      "mean_views": 3.88
     }
   }
 };
@@ -220,11 +250,166 @@ const plateResults = {
     "ball_coverage_pct": 95.83333333333334,
     "over20_pct": 26.38888888888889,
     "mean_views": 5.0
+  },
+  "accepted": {
+    "n": 97,
+    "median_mm": 17.355067985491633,
+    "p95_mm": 36.68506373959109,
+    "cbw_count": 0,
+    "cbw_pct": 0.0,
+    "cbw_ci_pct": [
+      0.0,
+      3.7315636908736063
+    ],
+    "coverage_pct": 90.72164948453609,
+    "ball_coverage_pct": 67.0103092783505,
+    "over20_pct": 39.175257731958766,
+    "mean_views": 5.0
   }
 };
-const studyGate = {"threshold": 0.87, "accepted": 556, "total": 1200, "plate_accepted": 78, "plate_total": 288};
+const studyGate = {"threshold": 1.1480989025130282, "accepted": 675, "total": 1200, "plate_accepted": 97, "plate_total": 288};
+const additionalStudies = {
+  "active": {
+    "full": {
+      "p95_two_views_mm": 24.482598053321297,
+      "mean_views": 4.145
+    },
+    "full_random": {
+      "p95_two_views_mm": 34.0190102143578,
+      "mean_views": 4.8758333333333335
+    }
+  },
+  "contact": {
+    "n": 300,
+    "median_mm": 6.987832613065325,
+    "p95_mm": 19.133235460832854,
+    "cbw_count": 0,
+    "cbw_pct": 0.0,
+    "cbw_ci_pct": [
+      0.0,
+      1.2220974694293552
+    ],
+    "coverage_pct": 75.33333333333333,
+    "ball_coverage_pct": 76.0,
+    "over20_pct": 4.666666666666667,
+    "mean_views": 3.97
+  },
+  "sensitivity": {
+    "full": {
+      "n": 300,
+      "median_mm": 5.651000346303434,
+      "p95_mm": 19.540461368527165,
+      "cbw_count": 0,
+      "cbw_pct": 0.0,
+      "cbw_ci_pct": [
+        0.0,
+        1.2220974694293552
+      ],
+      "coverage_pct": 87.33333333333333,
+      "ball_coverage_pct": 88.33333333333333,
+      "over20_pct": 4.666666666666667,
+      "mean_views": 4.18
+    },
+    "full_eta10": {
+      "n": 300,
+      "median_mm": 5.399542390555908,
+      "p95_mm": 19.089403400961384,
+      "cbw_count": 0,
+      "cbw_pct": 0.0,
+      "cbw_ci_pct": [
+        0.0,
+        1.2220974694293552
+      ],
+      "coverage_pct": 89.66666666666666,
+      "ball_coverage_pct": 91.0,
+      "over20_pct": 5.0,
+      "mean_views": 4.16
+    },
+    "full_eta50": {
+      "n": 300,
+      "median_mm": 5.54486153645129,
+      "p95_mm": 18.155812051566805,
+      "cbw_count": 0,
+      "cbw_pct": 0.0,
+      "cbw_ci_pct": [
+        0.0,
+        1.2220974694293552
+      ],
+      "coverage_pct": 90.0,
+      "ball_coverage_pct": 90.33333333333333,
+      "over20_pct": 4.333333333333334,
+      "mean_views": 4.19
+    },
+    "full_lmin1": {
+      "n": 300,
+      "median_mm": 5.684793406016936,
+      "p95_mm": 18.190803113915933,
+      "cbw_count": 0,
+      "cbw_pct": 0.0,
+      "cbw_ci_pct": [
+        0.0,
+        1.2220974694293552
+      ],
+      "coverage_pct": 88.33333333333333,
+      "ball_coverage_pct": 88.66666666666667,
+      "over20_pct": 4.666666666666667,
+      "mean_views": 4.176666666666667
+    },
+    "full_lmin10": {
+      "n": 300,
+      "median_mm": 5.651000346303434,
+      "p95_mm": 19.540461368527165,
+      "cbw_count": 0,
+      "cbw_pct": 0.0,
+      "cbw_ci_pct": [
+        0.0,
+        1.2220974694293552
+      ],
+      "coverage_pct": 87.33333333333333,
+      "ball_coverage_pct": 88.33333333333333,
+      "over20_pct": 4.666666666666667,
+      "mean_views": 4.18
+    },
+    "full_L5": {
+      "n": 300,
+      "median_mm": 5.651000346303434,
+      "p95_mm": 19.540461368527165,
+      "cbw_count": 0,
+      "cbw_pct": 0.0,
+      "cbw_ci_pct": [
+        0.0,
+        1.2220974694293552
+      ],
+      "coverage_pct": 88.0,
+      "ball_coverage_pct": 88.0,
+      "over20_pct": 4.666666666666667,
+      "mean_views": 4.19
+    },
+    "full_L20": {
+      "n": 300,
+      "median_mm": 5.600437648945527,
+      "p95_mm": 19.540461368527165,
+      "cbw_count": 0,
+      "cbw_pct": 0.0,
+      "cbw_ci_pct": [
+        0.0,
+        1.2220974694293552
+      ],
+      "coverage_pct": 88.33333333333333,
+      "ball_coverage_pct": 88.33333333333333,
+      "over20_pct": 4.666666666666667,
+      "mean_views": 4.173333333333333
+    }
+  }
+};
 // END GENERATED RESULTS
 const populationButtons = [...document.querySelectorAll('[data-population]')];
+// Match the manuscript's half-even rounding, including exact ties such as 88.25%.
+const statFormat = digits => new Intl.NumberFormat('en-US', {
+  minimumFractionDigits: digits, maximumFractionDigits: digits,
+  roundingMode: 'halfEven', useGrouping: false
+});
+const oneDecimal = statFormat(1), twoDecimals = statFormat(2);
 function setPopulation(population) {
   populationButtons.forEach(button => {
     const active = button.dataset.population === population;
@@ -235,19 +420,19 @@ function setPopulation(population) {
   document.querySelector('#population-note').textContent = population === 'all'
     ? 'Revised recovery study · before gate filtering · 2–5 views'
     : comma(studyGate.accepted) + ' / ' + comma(studyGate.total) +
-      ' trials accepted (' + (100*studyGate.accepted/studyGate.total).toFixed(1) +
-      '%) · c ≤ ' + studyGate.threshold.toFixed(2) + ' · descriptive subset';
-  for (const name of ['rpf', 'none', 'full']) {
+      ' trials accepted (' + twoDecimals.format(100*studyGate.accepted/studyGate.total) +
+      '%) · c ≤ ' + studyGate.threshold.toFixed(2) + ' · frozen trust gate';
+  for (const name of ['rpf', 'none', 'd3', 'full']) {
     const row = results[population][name];
     const table = '#table-' + name;
-    document.querySelector(table + '-median').textContent = row.median_mm.toFixed(1) + ' mm';
-    document.querySelector(table + '-p95').textContent = row.p95_mm.toFixed(1) + ' mm';
+    document.querySelector(table + '-median').textContent = oneDecimal.format(row.median_mm) + ' mm';
+    document.querySelector(table + '-p95').textContent = oneDecimal.format(row.p95_mm) + ' mm';
     document.querySelector(table + '-cbw').textContent = row.cbw_count + ' / ' + comma(row.n);
-    document.querySelector(table + '-coverage').textContent = row.coverage_pct.toFixed(1) + '%';
-    document.querySelector(table + '-ball').textContent = row.ball_coverage_pct.toFixed(1) + '%';
-    if (name === 'rpf') continue;
-    document.querySelector('#p95-' + name).innerHTML = row.p95_mm.toFixed(1) + ' <small>mm</small>';
-    document.querySelector('#cbw-' + name).innerHTML = row.cbw_pct.toFixed(2) + '<small>%</small>';
+    document.querySelector(table + '-coverage').textContent = oneDecimal.format(row.coverage_pct) + '%';
+    document.querySelector(table + '-ball').textContent = oneDecimal.format(row.ball_coverage_pct) + '%';
+    if (!['none', 'full'].includes(name)) continue;
+    document.querySelector('#p95-' + name).innerHTML = oneDecimal.format(row.p95_mm) + ' <small>mm</small>';
+    document.querySelector('#cbw-' + name).innerHTML = twoDecimals.format(row.cbw_pct) + '<small>%</small>';
     document.querySelector('#p95-' + name + '-bar').style.setProperty('--bar-width', row.p95_mm/30*100 + '%');
     document.querySelector('#cbw-' + name + '-bar').style.setProperty('--bar-width', row.cbw_pct/6*100 + '%');
   }
