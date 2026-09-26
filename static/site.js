@@ -76,18 +76,154 @@ function updateGeometry() {
 angleSlider.addEventListener('input', updateGeometry);
 updateGeometry();
 
-// Embedded summary keeps the site usable when index.html is opened directly.
-// Values are independently checked against static/data/results.json by validate_site.py.
+// Embedded statistics also work when the page is opened directly.
+// Updated from complete trial records by tools/prepare_results.py.
+// BEGIN GENERATED RESULTS
 const results = {
-  all: {
-    none: {n:1200, median:9.171640055847122, p95:137.5603970670698, cbw:17.666666666666668, count:212, coverage:68.5},
-    full: {n:1200, median:6.597589702205113, p95:21.87255988929896, cbw:0.8333333333333334, count:10, coverage:81.91666666666667}
+  "all": {
+    "rpf": {
+      "n": 1200,
+      "median_mm": 9.171640055847124,
+      "p95_mm": 137.5603970670698,
+      "cbw_count": 212,
+      "cbw_pct": 17.666666666666668,
+      "cbw_ci_pct": [
+        15.548447178385436,
+        19.944617009661723
+      ],
+      "coverage_pct": 68.5,
+      "ball_coverage_pct": 68.83333333333333,
+      "over20_pct": 23.583333333333336,
+      "mean_views": 4.265833333333333
+    },
+    "none": {
+      "n": 1200,
+      "median_mm": 6.494797348691111,
+      "p95_mm": 24.86264976447821,
+      "cbw_count": 35,
+      "cbw_pct": 2.9166666666666665,
+      "cbw_ci_pct": [
+        2.0397941540527644,
+        4.033187853994991
+      ],
+      "coverage_pct": 76.41666666666667,
+      "ball_coverage_pct": 77.75,
+      "over20_pct": 8.0,
+      "mean_views": 4.0216666666666665
+    },
+    "full": {
+      "n": 1200,
+      "median_mm": 5.452601939483614,
+      "p95_mm": 20.970362205008676,
+      "cbw_count": 0,
+      "cbw_pct": 0.0,
+      "cbw_ci_pct": [
+        0.0,
+        0.30693461081002843
+      ],
+      "coverage_pct": 84.16666666666667,
+      "ball_coverage_pct": 88.0,
+      "over20_pct": 5.666666666666666,
+      "mean_views": 4.145
+    }
   },
-  accepted: {
-    none: {n:556, median:8.706864165745035, p95:150.31253174274627, cbw:25, count:139, coverage:64.38848920863309},
-    full: {n:556, median:5.208021540990853, p95:15.847314474302799, cbw:0.3597122302158274, count:2, coverage:84.71223021582733}
+  "accepted": {
+    "rpf": {
+      "n": 556,
+      "median_mm": 8.706864165745035,
+      "p95_mm": 150.31253174274627,
+      "cbw_count": 139,
+      "cbw_pct": 25.0,
+      "cbw_ci_pct": [
+        21.45176669797294,
+        28.816317263213847
+      ],
+      "coverage_pct": 64.38848920863309,
+      "ball_coverage_pct": 63.66906474820144,
+      "over20_pct": 26.43884892086331,
+      "mean_views": 3.9928057553956835
+    },
+    "none": {
+      "n": 556,
+      "median_mm": 5.508332017501243,
+      "p95_mm": 20.406251377131735,
+      "cbw_count": 26,
+      "cbw_pct": 4.676258992805756,
+      "cbw_ci_pct": [
+        3.0770908690912298,
+        6.7769771723568475
+      ],
+      "coverage_pct": 77.6978417266187,
+      "ball_coverage_pct": 78.41726618705036,
+      "over20_pct": 5.39568345323741,
+      "mean_views": 3.6384892086330933
+    },
+    "full": {
+      "n": 556,
+      "median_mm": 4.27009958777513,
+      "p95_mm": 13.034622822661538,
+      "cbw_count": 0,
+      "cbw_pct": 0.0,
+      "cbw_ci_pct": [
+        0.0,
+        0.6612714413739798
+      ],
+      "coverage_pct": 91.36690647482014,
+      "ball_coverage_pct": 94.06474820143885,
+      "over20_pct": 1.079136690647482,
+      "mean_views": 3.816546762589928
+    }
   }
 };
+const plateResults = {
+  "full": {
+    "n": 288,
+    "median_mm": 9.82986359623498,
+    "p95_mm": 31.4861188172962,
+    "cbw_count": 0,
+    "cbw_pct": 0.0,
+    "cbw_ci_pct": [
+      0.0,
+      1.2726928093101806
+    ],
+    "coverage_pct": 96.52777777777779,
+    "ball_coverage_pct": 88.88888888888889,
+    "over20_pct": 13.88888888888889,
+    "mean_views": 4.986111111111111
+  },
+  "none": {
+    "n": 288,
+    "median_mm": 9.745313469550553,
+    "p95_mm": 30.331763770566212,
+    "cbw_count": 0,
+    "cbw_pct": 0.0,
+    "cbw_ci_pct": [
+      0.0,
+      1.2726928093101806
+    ],
+    "coverage_pct": 92.36111111111111,
+    "ball_coverage_pct": 87.15277777777779,
+    "over20_pct": 15.972222222222221,
+    "mean_views": 4.972222222222222
+  },
+  "random": {
+    "n": 288,
+    "median_mm": 12.170782497272981,
+    "p95_mm": 37.747627452010335,
+    "cbw_count": 0,
+    "cbw_pct": 0.0,
+    "cbw_ci_pct": [
+      0.0,
+      1.2726928093101806
+    ],
+    "coverage_pct": 96.875,
+    "ball_coverage_pct": 95.83333333333334,
+    "over20_pct": 26.38888888888889,
+    "mean_views": 5.0
+  }
+};
+const studyGate = {"threshold": 0.87, "accepted": 556, "total": 1200, "plate_accepted": 78, "plate_total": 288};
+// END GENERATED RESULTS
 const populationButtons = [...document.querySelectorAll('[data-population]')];
 function setPopulation(population) {
   populationButtons.forEach(button => {
@@ -95,20 +231,39 @@ function setPopulation(population) {
     button.classList.toggle('active', active);
     button.setAttribute('aria-pressed', String(active));
   });
+  const comma = n => n.toLocaleString('en-US');
   document.querySelector('#population-note').textContent = population === 'all'
-    ? 'Recovery study · before gate filtering · 2–5 views'
-    : '556 / 1,200 trials accepted (46.3%) · c ≤ 0.87 · descriptive subset';
-  for (const name of ['none', 'full']) {
+    ? 'Revised recovery study · before gate filtering · 2–5 views'
+    : comma(studyGate.accepted) + ' / ' + comma(studyGate.total) +
+      ' trials accepted (' + (100*studyGate.accepted/studyGate.total).toFixed(1) +
+      '%) · c ≤ ' + studyGate.threshold.toFixed(2) + ' · descriptive subset';
+  for (const name of ['rpf', 'none', 'full']) {
     const row = results[population][name];
-    document.querySelector(`#p95-${name}`).innerHTML = `${row.p95.toFixed(1)} <small>mm</small>`;
-    document.querySelector(`#cbw-${name}`).innerHTML = `${row.cbw.toFixed(2)}<small>%</small>`;
-    document.querySelector(`#p95-${name}-bar`).style.setProperty('--bar-width', `${row.p95/160*100}%`);
-    document.querySelector(`#cbw-${name}-bar`).style.setProperty('--bar-width', `${row.cbw/30*100}%`);
-    document.querySelector(`#table-${name}-median`).textContent = `${row.median.toFixed(1)} mm`;
-    document.querySelector(`#table-${name}-p95`).textContent = `${row.p95.toFixed(1)} mm`;
-    document.querySelector(`#table-${name}-cbw`).textContent = `${row.count} / ${row.n.toLocaleString('en-US')}`;
-    document.querySelector(`#table-${name}-coverage`).textContent = `${row.coverage.toFixed(1)}%`;
+    const table = '#table-' + name;
+    document.querySelector(table + '-median').textContent = row.median_mm.toFixed(1) + ' mm';
+    document.querySelector(table + '-p95').textContent = row.p95_mm.toFixed(1) + ' mm';
+    document.querySelector(table + '-cbw').textContent = row.cbw_count + ' / ' + comma(row.n);
+    document.querySelector(table + '-coverage').textContent = row.coverage_pct.toFixed(1) + '%';
+    document.querySelector(table + '-ball').textContent = row.ball_coverage_pct.toFixed(1) + '%';
+    if (name === 'rpf') continue;
+    document.querySelector('#p95-' + name).innerHTML = row.p95_mm.toFixed(1) + ' <small>mm</small>';
+    document.querySelector('#cbw-' + name).innerHTML = row.cbw_pct.toFixed(2) + '<small>%</small>';
+    document.querySelector('#p95-' + name + '-bar').style.setProperty('--bar-width', row.p95_mm/30*100 + '%');
+    document.querySelector('#cbw-' + name + '-bar').style.setProperty('--bar-width', row.cbw_pct/6*100 + '%');
   }
+  const a = results[population].none, b = results[population].full;
+  document.querySelector('#tail-note').textContent =
+    'Errors above 20 mm: ' + a.over20_pct.toFixed(1) + '% without recovery and ' +
+    b.over20_pct.toFixed(1) + '% with APCL.';
+  document.querySelector('#zero-note').textContent =
+    'APCL: ' + b.cbw_count + ' CBW events in ' + comma(b.n) + ' trials. The exact 95% interval is ' +
+    b.cbw_ci_pct[0].toFixed(2) + '–' + b.cbw_ci_pct[1].toFixed(2) +
+    '%; zero observed events do not establish zero risk.';
+  const scope = population === 'all' ? 'all trials' : 'gate-accepted trials';
+  document.querySelector('#coverage-note').innerHTML =
+    '<strong>Uncertainty still needs calibration.</strong> APCL’s 95% ellipsoid covered the truth in ' +
+    b.coverage_pct.toFixed(1) + '% of ' + scope + '; its 95% particle ball covered ' +
+    b.ball_coverage_pct.toFixed(1) + '%. Both remain below the nominal 95% level. Hardware validation is pending.';
 }
 populationButtons.forEach(button => button.addEventListener('click', () => setPopulation(button.dataset.population)));
 setPopulation('all');

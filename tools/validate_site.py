@@ -41,6 +41,9 @@ async def main():
     for link in links.local:
         assert (SITE/link).is_file(), f'Missing asset: {link}'
     data=json.loads((SITE/'static/data/results.json').read_text(encoding='utf-8'))
+    for source in data['sources']:
+        raw=(SITE.parent/source['file']).read_bytes()
+        assert hashlib.sha256(raw).hexdigest()==source['sha256'],source['file']
     episode=json.loads((SITE/'static/data/tether_episode.json').read_text(encoding='utf-8'))
     verification=json.loads((SITE/'static/data/tether_verification.json').read_text(encoding='utf-8'))
     media=json.loads((SITE/'static/data/tether_media.json').read_text(encoding='utf-8'))
@@ -88,19 +91,37 @@ async def main():
         checks.append('published film matches approved MP4, both caption tracks, final frame seek and recorded errors')
 
         embedded=await page.evaluate('results')
-        keys={'median':'median_mm','p95':'p95_mm','cbw':'cbw_pct','count':'cbw_count','coverage':'coverage_pct','n':'n'}
         for population in ('all','accepted'):
-            for variant in ('none','full'):
-                for key,source in keys.items():
-                    assert abs(embedded[population][variant][key]-data[population][variant][source])<1e-8,(population,variant,key)
+            assert embedded[population]==data[population],population
+            await page.locator(f'[data-population={population}]').click()
+            for variant in ('rpf','none','full'):
+                row=data[population][variant]
+                expected={
+                    'median':f"{row['median_mm']:.1f} mm",'p95':f"{row['p95_mm']:.1f} mm",
+                    'cbw':f"{row['cbw_count']} / {row['n']:,}",
+                    'coverage':f"{row['coverage_pct']:.1f}%",'ball':f"{row['ball_coverage_pct']:.1f}%",
+                }
+                for field,value in expected.items():
+                    assert await page.locator(f'#table-{variant}-{field}').inner_text()==value,(population,variant,field)
         await page.locator('[data-population=accepted]').click()
-        assert await page.locator('#table-full-cbw').inner_text()=='2 / 556'
-        assert await page.locator('#table-none-coverage').inner_text()=='64.4%'
+        assert await page.locator('#table-full-cbw').inner_text()=='0 / 556'
+        assert await page.locator('#table-full-ball').inner_text()=='94.1%'
         assert await page.locator('#cbw-none-bar').evaluate('(e)=>parseFloat(e.style.getPropertyValue("--bar-width"))')<100
         await page.locator('[data-population=all]').click()
-        assert await page.locator('#table-full-cbw').inner_text()=='10 / 1,200'
+        assert await page.locator('#table-full-cbw').inner_text()=='0 / 1,200'
+        assert '0.00–0.31%' in await page.locator('#zero-note').inner_text()
+        assert await page.locator('#cbw-full-bar').evaluate('(e)=>e.getBoundingClientRect().width')==0
+        assert await page.evaluate('plateResults')==data['plate']
+        for variant,row in data['plate'].items():
+            expected={
+                'median':f"{row['median_mm']:.1f} mm",'p95':f"{row['p95_mm']:.1f} mm",
+                'cbw':f"{row['cbw_count']} / {row['n']:,}",
+                'coverage':f"{row['coverage_pct']:.1f}%",'ball':f"{row['ball_coverage_pct']:.1f}%",
+            }
+            for field,value in expected.items():
+                assert await page.locator(f'#plate-{variant}-{field}').inner_text()==value,(variant,field)
         await page.locator('#results').screenshot(path=str(out/'results.png'))
-        checks.append('both populations and every embedded metric match source summary')
+        checks.append('three main baselines, both populations, both coverage definitions, added-mass results, exact CBW interval and zero-width bars match source summary')
 
         await page.locator('#view-angle').fill('0')
         assert 'Parallel' in await page.locator('#geometry-note').inner_text()
@@ -143,8 +164,16 @@ async def main():
         direct=await browser.new_page()
         await direct.goto((SITE/'index.html').as_uri())
         await direct.locator('[data-population=accepted]').click()
-        assert await direct.locator('#table-full-p95').inner_text()=='15.8 mm'
+        assert await direct.locator('#table-full-p95').inner_text()=='13.0 mm'
         checks.append('direct file opening retains interactive results')
+        nojs=await browser.new_context(java_script_enabled=False)
+        static=await nojs.new_page()
+        await static.goto(URL)
+        assert await static.locator('#table-full-p95').inner_text()=='21.0 mm'
+        assert await static.locator('#table-full-cbw').inner_text()=='0 / 1,200'
+        assert await static.locator('#plate-full-p95').inner_text()=='31.5 mm'
+        assert 'predate this result update' in await static.locator('#resources').inner_text()
+        checks.append('HTML fallback matches revised results without JavaScript; PDF snapshot status is visible')
         await browser.close()
     assert not errors,errors
     assert not bad_responses,bad_responses

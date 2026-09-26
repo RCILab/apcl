@@ -23,16 +23,24 @@ For an extracted release ZIP, run `python -B preview.py` instead.
 - An interactive illustration of contact ambiguity across force directions.
 - A 30-second film with a 0.9 kg suspended load, attachment-point close-ups,
   recorded particle distributions, English and Korean captions, and an MP4 download.
-- Results for all 1,200 trials and the 556 trials accepted by the trust gate.
+- Revised results for all 1,200 trials and the 556 trials accepted by the frozen trust gate.
+- A separate 288-trial added-mass reference study.
 - **Read Paper** and **Supplementary** links in the hero and resources section.
 - Code and data marked **TBD**, with no active download links.
 
 ## Evidence and scope
 
-The aggregate summary comes from `../claude_try/results/main.jsonl`.
-Its source hash is recorded locally in `static/data/results.json`.
-The film uses development seed 17 from `../gpt_try/tether_demo/output/`
-and is separate from the 1,200-trial aggregate study.
+The revised main summary comes from `../claude_try/results/main.jsonl`.
+The primary comparison uses MH moves in both CPF variants and isolates recovery.
+The archived regularized-PF baseline comes from `main_rpf.jsonl`; matching seeds,
+calibration statistics, payload estimates, and true masses are checked before merging.
+The added-mass reference uses the complete `plate.jsonl` study. Ellipsoid and
+particle-ball coverage are reported separately. Exact CBW intervals are two-sided
+95% Clopper-Pearson intervals; zero observed events do not imply zero population risk.
+Source hashes and definitions are recorded locally in `static/data/results.json`.
+
+The film uses development seed 17 from `../gpt_try/tether_demo/output/` and an earlier
+implementation. Its numerical comparison is not evidence for the revised benchmark.
 
 The left robot replays CPF and the right robot replays APCL. Both start from the
 same state and independently select the same next orientation in this example.
@@ -49,10 +57,18 @@ point, nor the suspended mass as prior information. Settling checks use the
 simulated load angle, speed, and tension. Final errors in this illustrative
 episode are 22.5 mm for CPF and 8.7 mm for APCL.
 
-Hardware validation is pending. Red hardware text in the manuscript describes
-planned results, not completed measurements. The supplementary material compares
-recursive and batch estimation on identical measurement windows, including
-uncertainty coverage and calibrated reporting.
+Hardware validation is pending. The main and added-mass reruns are complete;
+physical-contact, gate, batch, and sensitivity reruns are still in progress.
+The gate subset uses the previously frozen 0.87 threshold, not a newly validated gate.
+The downloadable manuscript and supplementary PDFs are snapshots from the previous
+analysis, explicitly labeled on the page. The source manuscript currently mixes
+revised main/added-mass numbers with earlier results for the pending reruns.
+Red hardware text describes planned results, not completed measurements.
+
+From this directory, run `python -B tools/prepare_results.py` to regenerate the
+local summary, embedded JavaScript statistics, and HTML fallback values from the
+three complete study files. It rejects missing seeds or failed trials and does
+not publish raw data or create code/data download archives.
 
 ## Updating the PDFs
 
@@ -87,8 +103,8 @@ and PyMuPDF. Rendering uses Windows Segoe UI fonts and the existing MuJoCo
 Menagerie mesh cache at `apcl/.build/franka_fr3/assets/`. The visual model includes
 a simplified gripper attachment without changing the recorded trajectories or estimates.
 
-`static/site.js` embeds the result summary for direct file viewing. When refreshing
-results, keep it consistent with `static/data/results.json` and run
+`static/site.js` embeds the result summary for direct file viewing. After refreshing
+results with `tools/prepare_results.py`, run
 `python -B tools/validate_site.py` from this directory with the preview server running.
 Browser validation also requires Playwright and Chrome.
 The older `capture_episode.py` and `render_video.py` scripts generate the earlier
