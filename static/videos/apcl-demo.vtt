@@ -1,17 +1,25 @@
 WEBVTT
 
-00:00.000 --> 00:04.000
-Left: CPF. Right: APCL. Gold marks the true contact.
-Colored diamonds show each contact estimate.
+00:00.000 --> 00:03.000
+A 0.9 kg weight pulls on the grasped object.
+The attachment point is unknown to both estimators.
 
-00:04.000 --> 00:07.000
-APCL restores support along the unresolved direction.
-The true contact is marked in gold.
+00:03.000 --> 00:08.000
+One measurement leaves possible attachment points
+along the force line of action.
 
-00:07.000 --> 00:13.300
-Each robot follows its own recorded reorientation.
-A second view supplies new information.
+00:08.000 --> 00:11.000
+APCL restores candidate positions
+along the unresolved direction.
 
-00:13.300 --> 00:18.000
-Coral estimate: 166.3 mm from the true contact.
-Mint estimate: 3.2 mm from the true contact.
+00:11.000 --> 00:18.000
+Tilt the object while keeping the cable attached.
+The force direction changes in object coordinates.
+
+00:18.000 --> 00:24.000
+Let the load settle, then measure again.
+Combine both views to narrow down the attachment point.
+
+00:24.000 --> 00:30.000
+This example: CPF 22.5 mm / APCL 8.7 mm position error.
+Gold marks the true attachment; diamonds show the estimates.

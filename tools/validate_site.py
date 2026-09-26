@@ -5,7 +5,6 @@ from html.parser import HTMLParser
 import json
 from pathlib import Path
 from urllib.parse import urlsplit, unquote
-import zipfile
 from playwright.async_api import async_playwright
 
 SITE=Path(__file__).resolve().parents[1]
@@ -42,10 +41,12 @@ async def main():
     for link in links.local:
         assert (SITE/link).is_file(), f'Missing asset: {link}'
     data=json.loads((SITE/'static/data/results.json').read_text(encoding='utf-8'))
-    episode=json.loads((SITE/'static/data/episode.json').read_text(encoding='utf-8'))
-    with zipfile.ZipFile(SITE/'static/downloads/apcl-study-code.zip') as source:
-        for name,digest in episode['source_sha256'].items():
-            assert hashlib.sha256(source.read(name.removeprefix('claude_try/'))).hexdigest()==digest,name
+    episode=json.loads((SITE/'static/data/tether_episode.json').read_text(encoding='utf-8'))
+    verification=json.loads((SITE/'static/data/tether_verification.json').read_text(encoding='utf-8'))
+    media=json.loads((SITE/'static/data/tether_media.json').read_text(encoding='utf-8'))
+    for name,digest in media.items():
+        assert hashlib.sha256((SITE/name).read_bytes()).hexdigest()==digest,name
+    assert media['static/videos/apcl-demo.mp4']==verification['sha256']
     errors=[]
     bad_responses=[]
     checks=[]
@@ -57,7 +58,7 @@ async def main():
         page.on('response',lambda response:bad_responses.append(f'{response.status} {response.url}') if response.status>=400 else None)
         await page.goto(URL,wait_until='networkidle')
         await page.wait_for_function("document.querySelector('#hero-video').readyState >= 2")
-        assert await page.locator('#hero-video').evaluate('(v)=>v.duration')==18
+        assert await page.locator('#hero-video').evaluate('(v)=>v.duration')==30
         await page.wait_for_function("document.querySelector('#hero-video').currentTime > 0")
         assert await page.locator('#hero-toggle').get_attribute('aria-label')=='Pause background simulation'
         await page.locator('#hero-toggle').click()
@@ -69,7 +70,22 @@ async def main():
         await page.wait_for_timeout(250)
         await page.screenshot(path=str(out/'desktop-hero.png'))
         await page.screenshot(path=str(out/'desktop-full.png'),full_page=True)
-        checks.append('hero autoplay, 18-second metadata, pause control, exact 5-second seek')
+        checks.append('hero autoplay, 30-second metadata, pause control, exact 5-second seek')
+
+        await page.locator('#demo-video').scroll_into_view_if_needed()
+        await page.locator('#demo-video').evaluate('(v)=>{v.muted=true;v.load();}')
+        await page.wait_for_function("document.querySelector('#demo-video').readyState >= 2")
+        assert await page.locator('#demo-video').evaluate('(v)=>v.duration')==30
+        assert await page.locator('#demo-video').evaluate('(v)=>v.videoWidth')==1600
+        await page.locator('#demo-video').evaluate('''v => new Promise(resolve => {
+          v.addEventListener('seeked', () => resolve(), {once:true}); v.currentTime=26;
+        })''')
+        assert await page.locator('#demo-video track').count()==2
+        await page.locator('#film').screenshot(path=str(out/'suspended-load-film.png'))
+        takeaways=await page.locator('.film-takeaways').inner_text()
+        for name in ('none','full'):
+            assert f"{episode['results'][name]['err']*1000:.1f} mm" in takeaways
+        checks.append('published film matches approved MP4, both caption tracks, final frame seek and recorded errors')
 
         embedded=await page.evaluate('results')
         keys={'median':'median_mm','p95':'p95_mm','cbw':'cbw_pct','count':'cbw_count','coverage':'coverage_pct','n':'n'}

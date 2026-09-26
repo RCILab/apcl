@@ -21,20 +21,23 @@ python -B tools/serve.py
 
 - 첫 화면: 두 MuJoCo 로봇의 궤적과 접촉점 추정을 비교하는 무음 반복 영상, 재생/정지, reduced-motion 대응
 - 핵심 원리: 두 힘 방향의 각도를 바꾸는 기하 그림
-- 18초 설명 영상: 실제 입자 스냅샷, 영문 자막, MP4 다운로드
+- 30초 설명 영상: 0.9 kg 추·줄, 연결점 확대 화면, 실제 입자 스냅샷, 영문·한국어 자막, MP4 다운로드
 - 정량 결과: 1,200회 전체 / trust gate 통과 556회 전환, 정의·범위 표시
 - 연구 코드·데이터·소개 PDF: 모두 TBD, 다운로드 링크 비활성화
 
 ## 근거와 범위
 
 - 결과 원본: `../claude_try/results/main.jsonl`, SHA-256는 `static/data/results.json` 참조
-- 영상: development seed 17을 2개 자세로 재실행한 실제 관절 궤적과 입자 분포
-- 왼쪽 로봇은 CPF, 오른쪽은 APCL의 실제 관절 궤적을 각각 재생. 같은 초기 상태/접촉에서 각자 다음 자세를 선택
+- 영상 원본: `../gpt_try/tether_demo/output/`, development seed 17의 2개 자세 측정과 실제 입자 분포
+- 왼쪽 로봇은 CPF, 오른쪽은 APCL의 실제 관절 궤적을 각각 재생. 같은 초기 상태에서 각자 다음 자세를 선택하며, 이번 예시에서는 선택 결과가 같음
 - 두 로봇은 비교를 위해 동일한 장면에 평행 이동해 배치한 독립 시행의 재생이며, 물리적인 협동 실험이 아님
 - 금색 점은 실제 접촉점, 주황색·민트색 마름모는 각 방법의 가중평균 추정점. 위치를 과장하지 않고 표시 기호만 확대
-- 시뮬레이션 시간 7초를 18초로 편집: 정지 구간과 감속 재생 포함
+- 시뮬레이션 시간 8.4초를 30초로 편집: 정지 구간과 감속 재생 포함
 - 스냅샷 사이의 추론 과정을 임의로 보간하지 않음
-- 화면의 물체 형상은 추정기에 주어지지 않음. 접촉은 물체 고정점에 적용한 외력이며 실제 pusher 충돌을 재현한 영상은 아님
+- 물체의 고정된 연결점과 자유 강체 추를 MuJoCo의 단방향 길이 제약으로 연결. 중력과 줄의 장력으로 하중이 발생하며 임의의 Cartesian 외력을 주입하지 않음
+- 추정 대상은 물체 쪽 연결점. 줄·물체의 형상, 정답 위치 및 추의 질량은 추정기 prior로 주어지지 않음
+- 측정 전 추의 각도·속도·장력을 확인해 안정 구간을 확보. 이는 통제된 시뮬레이션 장치의 기준값을 사용하는 절차임
+- 영상 예시의 오차는 CPF 22.5 mm, APCL 8.7 mm. 본문의 1,200회 통계와는 별도 실험
 - 하드웨어 실험은 미완료. 기존 논문 PDF의 임시 수치/미완성 부분은 이 사이트에 포함하지 않음
 - 소스 `claude_try/`, 원고 `paper/`는 수정하지 않음
 
@@ -50,17 +53,18 @@ clone한 경우 원본 형제 폴더 `claude_try/`, `gpt_try/`가 없으므로 �
 PyMuPDF가 필요합니다. 렌더링 스크립트는 Windows Segoe UI 글꼴을 사용합니다.
 
 ```powershell
-python -B apcl/tools/capture_episode.py
-python -B apcl/tools/prepare_results.py
-python -B apcl/tools/render_video.py
-python -B apcl/tools/make_note.py
+python -B gpt_try/tether_demo/capture_tether.py
+python -B gpt_try/tether_demo/render_tether.py
+python -B apcl/tools/prepare_tether_media.py
 python -B apcl/tools/package_site.py
 ```
 
-렌더링에 필요한 Franka FR3 시각 메시를 MuJoCo Menagerie에서 `apcl/.build/`로 내려받습니다.
+렌더링에는 기존 `apcl/.build/franka_fr3/assets/`의 MuJoCo Menagerie 메시 캐시가 필요합니다.
 시각화 모형에는 단순화한 그리퍼 형상을 추가했으며, 궤적/추정 결과를 바꾸지는 않습니다.
 `static/site.js`에는 직접 파일 열기를 위한 정량 결과 사본이 있습니다. 결과를 재생성할 때
 `static/data/results.json`과 수치를 맞춘 뒤 `tools/validate_site.py`로 확인하세요.
+`capture_episode.py`와 `render_video.py`는 이전 외력 화살표 영상용 스크립트입니다.
+현재 영상 업데이트에는 위의 `prepare_tether_media.py`를 사용합니다.
 
 ## 배포용 파일
 
