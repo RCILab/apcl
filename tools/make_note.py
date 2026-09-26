@@ -19,9 +19,8 @@ def main():
     for name,label in [('none','CPF / no recovery'),('full','APCL')]:
         r=DATA['all'][name]
         rows+=f"<tr><td>{label}</td><td>{r['median_mm']:.1f} mm</td><td>{r['p95_mm']:.1f} mm</td><td>{r['cbw_pct']:.2f}%</td><td>{r['coverage_pct']:.1f}%</td></tr>"
-    html=f'''<div class="eyebrow">RCI LAB / KYUNG HEE UNIVERSITY · SIMULATION PROJECT NOTE</div>
+    html=f'''<div class="eyebrow">APCL · SIMULATION PROJECT NOTE</div>
     <h1>APCL</h1><h2>Ambiguity-Preserving<br>Contact Localization</h2>
-    <p class="authors">Juchan Lee · Sanghyun Kim</p>
     <p class="tagline">Preserve ambiguity. Move to resolve it.</p>
     <h3>The idea</h3>
     <p>A single arm configuration leaves contact location ambiguous along the force line of action.
@@ -49,17 +48,17 @@ def main():
     <h3>Provenance</h3><p class="small">Source: claude_try/results/main.jsonl (1,200 trials).<br>
     SHA-256: {DATA['sha256'][:32]}<br>{DATA['sha256'][32:]}<br>
     The companion data archive contains per-trial CSV records, episode trajectories, weighted
-    particle snapshots, metadata, and source hashes. Contact: kim87@khu.ac.kr.</p>'''
+    particle snapshots, metadata, and source hashes.</p>'''
     css='''*{font-family:Helvetica,Arial,sans-serif}body{color:#1b3434;font-size:9.5pt;line-height:1.45}
     .eyebrow{font-size:7pt;letter-spacing:1px;color:#5a8275}h1{font-size:37pt;line-height:1;margin:20px 0 6px;color:#237a6d}
     h2{font-size:20pt;font-weight:normal;line-height:1.12;margin:0 0 12px}h3{font-size:11pt;margin:16px 0 5px}
-    p{margin:5px 0 8px}.authors{font-size:9pt;color:#6a7872}.tagline{font-size:13pt;margin:15px 0 17px;color:#277e6b}
+    p{margin:5px 0 8px}.tagline{font-size:13pt;margin:15px 0 17px;color:#277e6b}
     table{border-collapse:collapse;width:100%;font-size:8pt;margin:10px 0}td,th{border-bottom:1px solid #d6e1d8;padding:7px 5px;text-align:left}
     th{background:#e8f0e7;font-weight:normal;color:#456451}.small{font-size:7.5pt;color:#68756c}'''
     fit=page.insert_htmlbox(pymupdf.Rect(42,35,553,810),html,css=css,scale_low=1)
     if fit[0]<0:
         raise RuntimeError('Project note overflows; reduce content or add a page')
-    doc.set_metadata({'title':'APCL — Simulation Project Note','author':'Juchan Lee; Sanghyun Kim','subject':'Simulation only; hardware validation pending'})
+    doc.set_metadata({'title':'APCL — Simulation Project Note','author':'','subject':'Simulation only; hardware validation pending'})
     doc.save(SITE/'static/downloads/apcl-project-note.pdf')
     page.get_pixmap(matrix=pymupdf.Matrix(1.5,1.5)).save(SITE/'.build/project-note.png')
     doc.close()
@@ -75,7 +74,7 @@ def main():
     d.text((55,136),'Preserve\nambiguity.',font=f(63,True),fill=(238,246,244),spacing=0)
     d.text((55,302),'Move to\nresolve it.',font=f(63,True),fill=(92,229,208),spacing=0)
     d.text((58,514),'Ambiguity-Preserving Contact Localization',font=f(19),fill=(163,186,193))
-    d.text((58,563),'RCI LAB / KYUNG HEE UNIVERSITY',font=f(13),fill=(117,146,156))
+    d.text((58,563),'SIMULATION STUDY / RESEARCH IN PROGRESS',font=f(13),fill=(117,146,156))
     image.save(SITE/'static/images/social-card.jpg',quality=93)
     print('Project note, preview card and license ready.')
 

@@ -12,8 +12,5 @@ for the gripper and grasped box, and replays the captured joint positions. Light
 force arrows, snapshot plots, labels and composition are project visualization additions.
 The rendered box geometry is unavailable to the estimator.
 
-The website's structure is inspired by the RCI Lab SAPC project page:
-https://rcilab.khu.ac.kr/sapc/
-
 The layout, APCL icon, scripts, diagrams, captions and simulation videos were created
-for this project. No SAPC video, image, or stylesheet is embedded.
+for this project.

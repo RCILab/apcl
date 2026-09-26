@@ -1,10 +1,8 @@
 # APCL project page
 
-APCL 프로젝트 홈페이지입니다. GitHub Pages에서 정적 파일을 그대로 제공합니다.
-
-- 홈페이지: <https://rcilab.khu.ac.kr/apcl/>
-- 저장소: <https://github.com/RCILab/apcl>
-- 배포: `main` 브랜치 루트, `.nojekyll` 사용
+APCL 프로젝트 홈페이지의 심사용 버전입니다. 저자·소속·연락처 표시와
+특정 연구실 및 저장소로 연결되는 링크를 제외했습니다.
+모든 프로젝트 자료는 상대 경로로 연결해 다른 정적 호스팅으로 옮길 수 있습니다.
 
 ## 미리 보기
 
@@ -64,9 +62,11 @@ python -B apcl/tools/package_site.py
 ## 배포용 파일
 
 `apcl-site.zip`에는 `index.html`, `static/`, README와 로컬 확인용 `preview.py`가 포함됩니다.
+같은 내용의 `apcl-review.zip`도 생성합니다. 두 ZIP에는 Git 저장소나 커밋 이력이 포함되지 않습니다.
 `tools/`, `.build/`, 가상환경과 원본 작업공간은 업로드할 필요가 없습니다.
 ZIP 내부 `apcl/`을 웹 루트에 놓으면 `/apcl/` 경로에서 작동합니다.
-공유용 메타데이터는 `https://rcilab.khu.ac.kr/apcl/`을 대상으로 설정했습니다.
+공유용 이미지도 상대 경로를 사용하며 원래 호스팅 주소를 메타데이터에 넣지 않습니다.
+실제 익명 제출 시에는 이 파일 묶음을 별도로 올린 익명 공유 링크를 사용하세요.
 
 ## 외부 자산
 
