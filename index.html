@@ -11,7 +11,7 @@
   <meta property="og:image" content="static/images/social-card.jpg?v=suspended-load-1">
   <title>APCL | Ambiguity-Preserving Contact Localization</title>
   <link rel="icon" href="static/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="static/site.css">
+  <link rel="stylesheet" href="static/site.css?v=paper-supp-20260926">
   <script defer src="static/site.js"></script>
 </head>
 <body>
@@ -38,7 +38,7 @@
           <h1 id="hero-title">Preserve<br>ambiguity.<br><span>Move to<br> resolve it.</span></h1>
           <p class="project-name">Ambiguity-Preserving Contact Localization</p>
           <p class="hero-description">Where did contact happen? A robot keeps the possibilities open, then changes its view to find out.</p>
-          <div class="hero-actions"><a class="button button-accent" href="#film">Watch the idea <span aria-hidden="true">↘</span></a><a class="button button-ghost" href="#results">Explore the evidence</a><a class="button button-ghost" href="static/papers/apcl.pdf" target="_blank" rel="noopener">Read Paper <span aria-hidden="true">↗</span></a></div>
+          <div class="hero-actions"><a class="button button-accent" href="#film">Watch the idea <span aria-hidden="true">↘</span></a><a class="button button-ghost" href="static/papers/apcl.pdf?v=2828a9f11c1f" target="_blank" rel="noopener">Read Paper <span aria-hidden="true">↗</span></a><a class="button button-ghost" href="static/papers/apcl-supplementary.pdf?v=1e02dffc23bf" target="_blank" rel="noopener">Supplementary <span aria-hidden="true">↗</span></a></div>
         </div>
       </div>
       <a class="scroll-cue" href="#idea"><span aria-hidden="true">↓</span> FROM A LINE TO A POINT</a>
@@ -90,8 +90,13 @@
       <div class="evidence-caveat"><span aria-hidden="true">↳</span><p><strong>Smaller errors do not yet mean calibrated uncertainty.</strong> APCL’s 81.9% empirical coverage in the full study remains below the reported 95% level. Hardware validation is pending.</p></div>
     </div></section>
 
-    <section class="section wrap" id="resources" aria-labelledby="resources-title"><div class="section-intro"><p class="eyebrow">05 / RESOURCES</p><h2 id="resources-title">Paper & supporting materials.</h2><p class="lede">Read the draft manuscript. Code and data: TBD.</p></div>
-      <div class="resource-grid"><a class="resource-card" href="static/papers/apcl.pdf" target="_blank" rel="noopener"><span class="resource-icon" aria-hidden="true">≡</span><h3>Paper</h3><p>Anonymous working draft. Red text marks pending hardware results.</p><span class="resource-meta">PDF · Draft · 19 pages <span aria-hidden="true">↗</span></span></a><article class="resource-card resource-card--pending"><span class="resource-icon" aria-hidden="true">{ }</span><h3>Study code</h3><p>Python / MuJoCo implementation and experiment runner.</p><span class="resource-meta resource-status">TBD</span></article><article class="resource-card resource-card--pending"><span class="resource-icon" aria-hidden="true">↧</span><h3>Simulation data</h3><p>Trial records, trajectories, and weighted particle snapshots.</p><span class="resource-meta resource-status">TBD</span></article></div>
+    <section class="section wrap" id="resources" aria-labelledby="resources-title"><div class="section-intro"><p class="eyebrow">05 / RESOURCES</p><h2 id="resources-title">Paper & supporting materials.</h2><p class="lede">Read the manuscript and supplementary material. Code and data: TBD.</p></div>
+      <div class="resource-grid">
+        <a class="resource-card" href="static/papers/apcl.pdf?v=2828a9f11c1f" target="_blank" rel="noopener"><span class="resource-icon" aria-hidden="true">≡</span><h3>Paper</h3><p>Anonymous working draft, including simulation and reference-apparatus figures. Red text marks pending hardware results.</p><span class="resource-meta">PDF · Draft · 24 pages <span aria-hidden="true">↗</span></span></a>
+        <a class="resource-card" href="static/papers/apcl-supplementary.pdf?v=1e02dffc23bf" target="_blank" rel="noopener"><span class="resource-icon" aria-hidden="true">≡</span><h3>Supplementary</h3><p>Recursive versus batch estimation on identical measurement windows, uncertainty coverage, and calibrated reporting.</p><span class="resource-meta">PDF · Draft · 2 pages <span aria-hidden="true">↗</span></span></a>
+        <article class="resource-card resource-card--pending"><span class="resource-icon" aria-hidden="true">{ }</span><h3>Study code</h3><p>Python / MuJoCo implementation and experiment runner.</p><span class="resource-meta resource-status">TBD</span></article>
+        <article class="resource-card resource-card--pending"><span class="resource-icon" aria-hidden="true">↧</span><h3>Simulation data</h3><p>Trial records, trajectories, and weighted particle snapshots.</p><span class="resource-meta resource-status">TBD</span></article>
+      </div>
       <div class="scope-grid"><div><h3>Current scope</h3><p>A rigidly grasped payload, a single object-fixed contact point, approximately world-fixed force across views, quasi-static measurement windows, and regulated tool position.</p></div><div><h3>Still to validate</h3><p>Real-robot measurements, independent contact ground truth, and departures from the assumed contact and force model. This page reports simulation results; the manuscript is in preparation.</p></div></div>
     </section>
   </main>

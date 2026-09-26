@@ -23,7 +23,7 @@ python -B tools/serve.py
 - 핵심 원리: 두 힘 방향의 각도를 바꾸는 기하 그림
 - 30초 설명 영상: 0.9 kg 추·줄, 연결점 확대 화면, 실제 입자 스냅샷, 영문·한국어 자막, MP4 다운로드
 - 정량 결과: 1,200회 전체 / trust gate 통과 556회 전환, 정의·범위 표시
-- 논문: 첫 화면의 Read Paper 버튼과 Resources 카드에서 익명 초안 PDF 열기
+- 논문·보충자료: 첫 화면의 Read Paper / Supplementary 버튼과 Resources 카드에서 익명 초안 PDF 열기
 - 연구 코드·데이터: TBD, 다운로드 링크 비활성화
 
 ## 근거와 범위
@@ -40,6 +40,7 @@ python -B tools/serve.py
 - 측정 전 추의 각도·속도·장력을 확인해 안정 구간을 확보. 이는 통제된 시뮬레이션 장치의 기준값을 사용하는 절차임
 - 영상 예시의 오차는 CPF 22.5 mm, APCL 8.7 mm. 본문의 1,200회 통계와는 별도 실험
 - 하드웨어 실험은 미완료. `static/papers/apcl.pdf`는 `../paper/main.pdf`의 익명 초안이며, 빨간 실기 문장은 실제 측정 전의 예정 자료임을 다운로드 카드에 표시
+- `static/papers/apcl-supplementary.pdf`는 `../paper/supplementary.pdf`의 사본. 동일 측정 구간의 recursive/batch 비교와 불확실성·보고 기준을 다룸
 - 소스 `claude_try/`, 원고 `paper/`는 수정하지 않음
 
 ## 재생성
@@ -49,7 +50,8 @@ clone한 경우 원본 형제 폴더 `claude_try/`, `gpt_try/`가 없으므로 �
 홈페이지 자체는 원본 작업공간이나 Python 설치 없이 동작합니다.
 원본 자료는 로컬 작업공간의 `static/data/`, `static/downloads/`에 보관합니다.
 현재 두 폴더는 Git 추적과 배포 ZIP에서 제외하며, 코드·데이터 공개 상태는 TBD입니다.
-논문 초안은 별도 경로 `static/papers/apcl.pdf`에 두며 Git 추적과 배포 ZIP에 포함합니다.
+논문과 보충자료는 `static/papers/apcl.pdf`, `static/papers/apcl-supplementary.pdf`에 두며 Git 추적과 배포 ZIP에 포함합니다.
+PDF를 교체할 때는 `index.html`의 페이지 수와 두 문서 링크의 버전 값(SHA-256 앞 12자리)도 함께 갱신하세요.
 
 작업공간 루트에서 실행합니다. Python 3.12, numpy, scipy, mujoco, Pillow, imageio-ffmpeg,
 PyMuPDF가 필요합니다. 렌더링 스크립트는 Windows Segoe UI 글꼴을 사용합니다.
