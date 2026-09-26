@@ -20,7 +20,7 @@
     <nav class="nav wrap" aria-label="Main navigation">
       <a class="brand" href="#top" aria-label="APCL home"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M4 27 30 9M5 10l26 17"/><circle cx="18" cy="18" r="4"/></svg>APCL<span class="brand-detail">PROJECT PAGE</span></a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu <span aria-hidden="true">＋</span></button>
-      <div class="nav-links" id="nav-links"><a href="#idea">The idea</a><a href="#film">Film</a><a href="#method">Method</a><a href="#results">Evidence</a><a class="nav-resource" href="#resources">Code & data <span aria-hidden="true">↗</span></a></div>
+      <div class="nav-links" id="nav-links"><a href="#idea">The idea</a><a href="#film">Film</a><a href="#method">Method</a><a href="#results">Evidence</a><a class="nav-resource" href="#resources">Paper & resources <span aria-hidden="true">↗</span></a></div>
     </nav>
   </header>
 
@@ -38,7 +38,7 @@
           <h1 id="hero-title">Preserve<br>ambiguity.<br><span>Move to<br> resolve it.</span></h1>
           <p class="project-name">Ambiguity-Preserving Contact Localization</p>
           <p class="hero-description">Where did contact happen? A robot keeps the possibilities open, then changes its view to find out.</p>
-          <div class="hero-actions"><a class="button button-accent" href="#film">Watch the idea <span aria-hidden="true">↘</span></a><a class="button button-ghost" href="#results">Explore the evidence</a></div>
+          <div class="hero-actions"><a class="button button-accent" href="#film">Watch the idea <span aria-hidden="true">↘</span></a><a class="button button-ghost" href="#results">Explore the evidence</a><a class="button button-ghost" href="static/papers/apcl.pdf" target="_blank" rel="noopener">Paper (draft) <span aria-hidden="true">↗</span></a></div>
           <p class="hero-status">Research in progress <span>·</span> Simulation study</p>
         </div>
       </div>
@@ -91,8 +91,8 @@
       <div class="evidence-caveat"><span aria-hidden="true">↳</span><p><strong>Smaller errors do not yet mean calibrated uncertainty.</strong> APCL’s 81.9% empirical coverage in the full study remains below the reported 95% level. Hardware validation is pending.</p></div>
     </div></section>
 
-    <section class="section wrap" id="resources" aria-labelledby="resources-title"><div class="section-intro"><p class="eyebrow">05 / RESOURCES</p><h2 id="resources-title">Code & supporting materials.</h2><p class="lede">Code, data, and supporting documents: TBD.</p></div>
-      <div class="resource-grid"><article class="resource-card resource-card--pending"><span class="resource-icon" aria-hidden="true">{ }</span><h3>Study code</h3><p>Python / MuJoCo implementation and experiment runner.</p><span class="resource-meta resource-status">TBD</span></article><article class="resource-card resource-card--pending"><span class="resource-icon" aria-hidden="true">↧</span><h3>Simulation data</h3><p>Trial records, trajectories, and weighted particle snapshots.</p><span class="resource-meta resource-status">TBD</span></article><article class="resource-card resource-card--pending"><span class="resource-icon" aria-hidden="true">≡</span><h3>Project note</h3><p>Overview of the mechanism, evidence, and study scope.</p><span class="resource-meta resource-status">TBD</span></article></div>
+    <section class="section wrap" id="resources" aria-labelledby="resources-title"><div class="section-intro"><p class="eyebrow">05 / RESOURCES</p><h2 id="resources-title">Paper & supporting materials.</h2><p class="lede">Read the draft manuscript. Code and data: TBD.</p></div>
+      <div class="resource-grid"><a class="resource-card" href="static/papers/apcl.pdf" target="_blank" rel="noopener"><span class="resource-icon" aria-hidden="true">≡</span><h3>Paper</h3><p>Anonymous working draft. Red text marks pending hardware results.</p><span class="resource-meta">PDF · Draft · 19 pages <span aria-hidden="true">↗</span></span></a><article class="resource-card resource-card--pending"><span class="resource-icon" aria-hidden="true">{ }</span><h3>Study code</h3><p>Python / MuJoCo implementation and experiment runner.</p><span class="resource-meta resource-status">TBD</span></article><article class="resource-card resource-card--pending"><span class="resource-icon" aria-hidden="true">↧</span><h3>Simulation data</h3><p>Trial records, trajectories, and weighted particle snapshots.</p><span class="resource-meta resource-status">TBD</span></article></div>
       <div class="scope-grid"><div><h3>Current scope</h3><p>A rigidly grasped payload, a single object-fixed contact point, approximately world-fixed force across views, quasi-static measurement windows, and regulated tool position.</p></div><div><h3>Still to validate</h3><p>Real-robot measurements, independent contact ground truth, and departures from the assumed contact and force model. This page reports simulation results; the manuscript is in preparation.</p></div></div>
     </section>
   </main>
