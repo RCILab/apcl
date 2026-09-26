@@ -69,7 +69,7 @@ def html_value(html, element_id, value):
 
 def main():
     rows, main_source = load_complete("main.jsonl", range(10000, 11200))
-    old, rpf_source = load_complete("main_rpf.jsonl", range(10000, 11200))
+    rpf_rows, rpf_source = load_complete("main_rpf.jsonl", range(10000, 11200))
     plates, plate_source = load_complete("plate.jsonl", range(90000, 90288))
     contacts, contact_source = load_complete("contact.jsonl", range(70000, 70300))
     sensitivity, sensitivity_source = load_complete("sens.jsonl", range(60000, 60300))
@@ -80,11 +80,11 @@ def main():
     numbers_source = {"file": "claude_try/results/paper_numbers.json",
                       "sha256": hashlib.sha256(numbers_raw).hexdigest()}
     threshold = numbers["gate"]["gamma"]
-    for row, previous in zip(rows, old):
-        assert row["seed"] == previous["seed"]
+    for row, baseline in zip(rows, rpf_rows):
+        assert row["seed"] == baseline["seed"]
         for key in ("c_stat", "theta", "m_true"):
-            assert np.allclose(row[key], previous[key], rtol=0, atol=1e-12), (row["seed"], key)
-        row["res"]["rpf"] = previous["res"]["none"]
+            assert np.allclose(row[key], baseline[key], rtol=0, atol=1e-12), (row["seed"], key)
+        row["res"]["rpf"] = baseline["res"]["none_rpf"]
         row["res"]["d3"] = row["res"]["D3loa"]
     accepted = [r for r in rows if r["c_stat"] <= threshold]
     accepted_plate = [r for r in plates if r["c_stat"] <= threshold]
@@ -107,13 +107,14 @@ def main():
     for v in active:
         assert np.isclose(active[v]["p95_two_views_mm"], numbers["budget"]["2"][v]["p95"])
     contact = metrics([r["res"]["fol_tcp"] for r in contacts])
+    contact_estimate = metrics([r["res"]["fol_est"] for r in contacts])
     sens = {v: metrics([r["res"][v] for r in sensitivity]) for v in sensitivity[0]["res"]}
-    extra = {"active": active, "contact": contact, "sensitivity": sens}
+    extra = {"active": active, "contact": contact, "contact_estimate_pivot": contact_estimate, "sensitivity": sens}
     gate = {"threshold": threshold, "accepted": len(accepted), "total": len(rows),
             "plate_accepted": len(accepted_plate), "plate_total": len(plates)}
     summary = {
         "sources": [main_source, rpf_source, plate_source, contact_source, sensitivity_source, gate_source, numbers_source],
-        "scope": "Current simulation runs; numerical validation is provisional pending an estimator consistency check. Hardware measurements are pending.",
+        "scope": "Simulation reruns are complete. Hardware measurements are pending.",
         "gate": gate,
         "definitions": {
             "cbw": "95% particle radius < 10 mm AND true error > 20 mm",
@@ -121,7 +122,7 @@ def main():
             "ball_coverage": "true position error <= reported 95% particle radius",
             "final": "final estimate after 2-5 views, with adaptive stopping",
             "interval": "two-sided 95% Clopper-Pearson interval for the observed CBW proportion",
-            "rpf": "archived regularized PF without recovery; identical seeds and Phase 1",
+            "rpf": "regularized PF without recovery, rerun with the current implementation; identical seeds and Phase 1",
             "none": "revised CPF with Metropolis-Hastings moves, without recovery",
             "d3": "revised CPF with MH moves and information-triggered line-of-action recovery only",
             "full": "revised CPF with Metropolis-Hastings moves and D1/D2/D3 recovery",
@@ -199,8 +200,9 @@ def main():
     html = html_value(html, "contact-summary",
         f'<strong>{contact["median_mm"]:.1f} mm / {contact["p95_mm"]:.1f} mm</strong><span>median / p95 position error</span>')
     html = html_value(html, "contact-details",
-        f'A following spherical pusher generated force through MuJoCo contact dynamics. '
-        f'{contact["cbw_count"]} CBW events in {contact["n"]:,} simulated trials; hardware validation is pending.')
+        'A following spherical pusher generated force through MuJoCo contact dynamics. '
+        f'Rotating about the tool center point gave {contact["cbw_count"]} CBW events in {contact["n"]:,} trials; '
+        f'rotating about the estimated contact gave {contact_estimate["cbw_count"]} in {contact_estimate["n"]:,}.')
     p95 = [r["p95_mm"] for r in sens.values()]
     html = html_value(html, "sensitivity-summary",
         f'<strong>{min(p95):.1f}–{max(p95):.1f} mm</strong><span>p95 across tested parameter settings</span>')

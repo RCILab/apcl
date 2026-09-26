@@ -33,7 +33,7 @@ For an extracted release ZIP, run `python -B preview.py` instead.
 
 The revised main summary comes from `../claude_try/results/main.jsonl`.
 The primary comparison uses MH moves in both CPF variants and isolates recovery.
-The archived regularized-PF baseline comes from `main_rpf.jsonl`; matching seeds,
+The regularized-PF baseline was also rerun and comes from `main_rpf.jsonl`; matching seeds,
 calibration statistics, payload estimates, and true masses are checked before merging.
 The added-mass reference uses the complete `plate.jsonl` study. Ellipsoid and
 particle-ball coverage are reported separately. Exact CBW intervals are two-sided
@@ -59,9 +59,9 @@ simulated load angle, speed, and tension. Final errors in this illustrative
 episode are 22.5 mm for CPF and 8.7 mm for APCL.
 
 The main, added-mass, physical-contact, gate, and sensitivity simulation runs are
-complete. Their numerical results remain provisional while an estimator consistency
-check is open: changing the force-variation scale may require a corresponding
-importance-weight correction. Hardware validation is pending. Red hardware text
+complete after correcting the importance weights for changes in the force-variation
+scale. The fixed-particle target check passes with the corrected implementation.
+Hardware validation is pending. Red hardware text
 in the manuscript describes planned values, not completed measurements.
 
 The gate threshold is read from the current `paper_numbers.json` analysis (about

@@ -114,9 +114,12 @@ async def main():
                 }
                 for field,value in expected.items():
                     assert await page.locator(f'#table-{variant}-{field}').inner_text()==value,(population,variant,field)
+            coverage_note=await page.locator('#coverage-note').inner_text()
+            for metric in ('coverage_pct','ball_coverage_pct'):
+                assert f"{data[population]['full'][metric]:.1f}%" in coverage_note,(population,metric)
         await page.locator('[data-population=accepted]').click()
         assert await page.locator('#table-full-cbw').inner_text()=='0 / 675'
-        assert await page.locator('#table-full-ball').inner_text()=='93.5%'
+        assert await page.locator('#table-full-ball').inner_text()==f"{data['accepted']['full']['ball_coverage_pct']:.1f}%"
         assert '1.15' in await page.locator('#population-note').inner_text()
         assert await page.locator('#cbw-none-bar').evaluate('(e)=>parseFloat(e.style.getPropertyValue("--bar-width"))')<100
         await page.locator('[data-population=all]').click()
@@ -133,11 +136,21 @@ async def main():
             }
             for field,value in expected.items():
                 assert await page.locator(f'#plate-{variant}-{field}').inner_text()==value,(variant,field)
-        assert await page.locator('#plate-accepted-ball').inner_text()=='67.0%'
-        assert '24.5 vs 34.0 mm' in await page.locator('#active-summary').inner_text()
-        assert '7.0 mm / 19.1 mm' in await page.locator('#contact-summary').inner_text()
-        assert '18.2–19.5 mm' in await page.locator('#sensitivity-summary').inner_text()
-        assert 'provisional' in await page.locator('#validation-note').inner_text()
+        active=data['additional']['active']
+        contact=data['additional']['contact']
+        pivot=data['additional']['contact_estimate_pivot']
+        sens_p95=[r['p95_mm'] for r in data['additional']['sensitivity'].values()]
+        active_text=f"{active['full']['p95_two_views_mm']:.1f} vs {active['full_random']['p95_two_views_mm']:.1f} mm"
+        contact_text=f"{contact['median_mm']:.1f} mm / {contact['p95_mm']:.1f} mm"
+        sensitivity_text=f"{min(sens_p95):.1f}–{max(sens_p95):.1f} mm"
+        assert active_text in await page.locator('#active-summary').inner_text()
+        assert contact_text in await page.locator('#contact-summary').inner_text()
+        assert sensitivity_text in await page.locator('#sensitivity-summary').inner_text()
+        contact_details=await page.locator('#contact-details').inner_text()
+        assert f"tool center point gave {contact['cbw_count']} CBW events in {contact['n']:,}" in contact_details
+        assert f"estimated contact gave {pivot['cbw_count']} in {pivot['n']:,}" in contact_details
+        assert 'Simulation reruns are complete.' in await page.locator('#validation-note').inner_text()
+        assert 'provisional' not in html and 'consistency check remains open' not in html
         await page.locator('#results').screenshot(path=str(out/'results.png'))
         await page.locator('#supporting-studies').screenshot(path=str(out/'supporting-studies.png'))
         checks.append('four main variants, both populations, both coverage definitions, added-mass subset, three additional studies, exact CBW interval and zero-width bars match source summary')
@@ -183,18 +196,21 @@ async def main():
         direct=await browser.new_page()
         await direct.goto((SITE/'index.html').as_uri())
         await direct.locator('[data-population=accepted]').click()
-        assert await direct.locator('#table-full-p95').inner_text()=='14.0 mm'
+        assert await direct.locator('#table-full-p95').inner_text()==f"{data['accepted']['full']['p95_mm']:.1f} mm"
         checks.append('direct file opening retains interactive results')
         nojs=await browser.new_context(java_script_enabled=False)
         static=await nojs.new_page()
         await static.goto(URL)
-        assert await static.locator('#table-full-p95').inner_text()=='21.0 mm'
+        assert await static.locator('#table-full-p95').inner_text()==f"{data['all']['full']['p95_mm']:.1f} mm"
         assert await static.locator('#table-full-cbw').inner_text()=='0 / 1,200'
-        assert await static.locator('#plate-full-p95').inner_text()=='31.5 mm'
-        assert await static.locator('#table-d3-ball').inner_text()=='88.2%'
-        assert '7.0 mm / 19.1 mm' in await static.locator('#contact-summary').inner_text()
+        assert await static.locator('#plate-full-p95').inner_text()==f"{data['plate']['full']['p95_mm']:.1f} mm"
+        assert await static.locator('#table-d3-ball').inner_text()==f"{data['all']['d3']['ball_coverage_pct']:.1f}%"
+        assert contact_text in await static.locator('#contact-summary').inner_text()
+        assert active_text in await static.locator('#active-summary').inner_text()
+        assert sensitivity_text in await static.locator('#sensitivity-summary').inner_text()
+        assert f"{data['all']['full']['ball_coverage_pct']:.1f}%" in await static.locator('#coverage-note').inner_text()
         assert 'planned, not measured' in await static.locator('#resources').inner_text()
-        checks.append('HTML fallback matches revised results without JavaScript; current anonymous PDF matches source; hardware placeholders and provisional numerical status are visible')
+        checks.append('HTML fallback matches revised results without JavaScript; current anonymous PDF matches source; completed simulation reruns and pending hardware are clearly distinguished')
         await browser.close()
     assert not errors,errors
     assert not bad_responses,bad_responses
