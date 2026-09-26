@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 apcl-site.zip
 apcl-review.zip
+static/data/
+static/downloads/

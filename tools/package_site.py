@@ -5,7 +5,8 @@ from zipfile import ZipFile, ZIP_DEFLATED
 
 SITE=Path(__file__).resolve().parents[1]
 files=[SITE/'index.html',SITE/'README.md',SITE/'THIRD_PARTY.md',SITE/'.nojekyll']
-files+=sorted(p for p in (SITE/'static').rglob('*') if p.is_file())
+files+=sorted(p for p in (SITE/'static').rglob('*')
+              if p.is_file() and p.relative_to(SITE/'static').parts[0] not in {'data','downloads'})
 target=SITE/'apcl-site.zip'
 with ZipFile(target,'w',ZIP_DEFLATED) as archive:
     for path in files:

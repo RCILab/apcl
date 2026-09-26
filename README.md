@@ -23,7 +23,7 @@ python -B tools/serve.py
 - 핵심 원리: 두 힘 방향의 각도를 바꾸는 기하 그림
 - 18초 설명 영상: 실제 입자 스냅샷, 영문 자막, MP4 다운로드
 - 정량 결과: 1,200회 전체 / trust gate 통과 556회 전환, 정의·범위 표시
-- 다운로드: 연구 코드 스냅샷, CSV/JSON/NPZ 데이터, 시뮬레이션 소개 PDF
+- 연구 코드·데이터·소개 PDF: 모두 TBD, 다운로드 링크 비활성화
 
 ## 근거와 범위
 
@@ -43,7 +43,8 @@ python -B tools/serve.py
 아래 영상·데이터 재생성 명령은 원래 연구 작업공간에서 실행합니다. 이 사이트 저장소만
 clone한 경우 원본 형제 폴더 `claude_try/`, `gpt_try/`가 없으므로 실행되지 않습니다.
 홈페이지 자체는 원본 작업공간이나 Python 설치 없이 동작합니다.
-연구 코드만 재현하려면 `static/downloads/apcl-study-code.zip`을 풀고 내부 README를 참고하세요.
+원본 자료는 로컬 작업공간의 `static/data/`, `static/downloads/`에 보관합니다.
+현재 두 폴더는 Git 추적과 배포 ZIP에서 제외하며, 연구 자료 공개 상태는 TBD입니다.
 
 작업공간 루트에서 실행합니다. Python 3.12, numpy, scipy, mujoco, Pillow, imageio-ffmpeg,
 PyMuPDF가 필요합니다. 렌더링 스크립트는 Windows Segoe UI 글꼴을 사용합니다.
@@ -64,6 +65,7 @@ python -B apcl/tools/package_site.py
 ## 배포용 파일
 
 `apcl-site.zip`에는 `index.html`, `static/`, README와 로컬 확인용 `preview.py`가 포함됩니다.
+TBD 상태인 자료 폴더(`static/data/`, `static/downloads/`)는 ZIP에 넣지 않습니다.
 같은 내용의 `apcl-review.zip`도 생성합니다. 두 ZIP에는 Git 저장소나 커밋 이력이 포함되지 않습니다.
 `tools/`, `.build/`, 가상환경과 원본 작업공간은 업로드할 필요가 없습니다.
 ZIP 내부 `apcl/`을 웹 루트에 놓으면 `/apcl/` 경로에서 작동합니다.
