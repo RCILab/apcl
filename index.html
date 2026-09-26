@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09141d">
+  <meta name="description" content="APCL: Ambiguity-Preserving Contact Localization. Preserve contact hypotheses, then move to resolve them. A MuJoCo simulation study from RCI Lab, Kyung Hee University.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="APCL — Preserve ambiguity. Move to resolve it.">
+  <meta property="og:description" content="Contact localization on unknown grasped objects, using joint states and commanded torques. Explore the simulation and its evidence.">
+  <meta property="og:image" content="https://rcilab.khu.ac.kr/apcl/static/images/social-card.jpg">
+  <meta property="og:url" content="https://rcilab.khu.ac.kr/apcl/">
+  <title>APCL | Ambiguity-Preserving Contact Localization</title>
+  <link rel="icon" href="static/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="static/site.css">
+  <script defer src="static/site.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#idea">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav wrap" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="APCL home"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M4 27 30 9M5 10l26 17"/><circle cx="18" cy="18" r="4"/></svg>APCL<span class="brand-detail">RCI LAB</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu <span aria-hidden="true">＋</span></button>
+      <div class="nav-links" id="nav-links"><a href="#idea">The idea</a><a href="#film">Film</a><a href="#method">Method</a><a href="#results">Evidence</a><a class="nav-resource" href="#resources">Code & data <span aria-hidden="true">↗</span></a></div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-visual">
+        <video id="hero-video" muted loop playsinline preload="metadata" poster="static/images/hero-poster.jpg" aria-label="MuJoCo robot reorients a grasped box. The APCL posterior preserves a line of possible contact points and then localizes the true contact.">
+          <source src="static/videos/apcl-hero.mp4" type="video/mp4">
+        </video>
+        <div class="hero-video-controls"><span><i class="live-dot"></i> SIMULATION REPLAY <span class="video-separator">/</span> SEED 17</span><button id="hero-toggle" type="button" aria-label="Play background simulation">Play <span aria-hidden="true">▶</span></button></div>
+      </div>
+      <div class="wrap hero-content">
+        <div class="hero-copy">
+          <p class="eyebrow hero-eyebrow"><span class="status-dot"></span> RCI LAB · KYUNG HEE UNIVERSITY</p>
+          <h1 id="hero-title">Preserve<br>ambiguity.<br><span>Move to<br> resolve it.</span></h1>
+          <p class="project-name">Ambiguity-Preserving Contact Localization</p>
+          <p class="hero-description">Where did contact happen? A robot keeps the possibilities open, then changes its view to find out.</p>
+          <p class="authors">Juchan Lee <span>·</span> Sanghyun Kim</p>
+          <div class="hero-actions"><a class="button button-accent" href="#film">Watch the idea <span aria-hidden="true">↘</span></a><a class="button button-ghost" href="#results">Explore the evidence</a></div>
+          <p class="hero-status">Research in progress <span>·</span> Simulation study</p>
+        </div>
+      </div>
+      <a class="scroll-cue" href="#idea"><span aria-hidden="true">↓</span> FROM A LINE TO A POINT</a>
+    </section>
+
+    <div class="study-strip"><div class="wrap strip-inner"><p>A contact point.<br><strong>No object model.</strong></p><p>Joint states + commanded torques.<br><strong>No joint-torque, F/T or tactile measurements.</strong></p><p>Geometry in the renderer.<br><strong>Unknown to the estimator.</strong></p></div></div>
+
+    <section class="section idea-section wrap" id="idea" aria-labelledby="idea-title">
+      <div class="section-intro"><p class="eyebrow">01 / THE CENTRAL IDEA</p><h2 id="idea-title">One view gives a line.<br>A new view gives a point.</h2><p class="lede">A single configuration cannot distinguish contact points along the force line of action. A narrow particle cloud can look certain while missing the true contact.</p></div>
+      <div class="idea-layout">
+        <div class="idea-copy"><h3>Keep the ambiguity that the measurement cannot remove.</h3><p>APCL restores hypotheses along the unresolved direction. Reorienting the grasped object then changes the force direction in the object frame, making the contact point identifiable across views.</p><p class="formula" aria-label="The cross product of p plus alpha f and f equals the cross product of p and f">(p + αf) × f = p × f</p><p class="small muted">The same force and moment can correspond to an entire line of contact points.</p></div>
+        <div class="geometry-card">
+          <div class="geometry-heading"><span class="eyebrow">TRY A SECOND VIEW</span><output id="angle-output" for="view-angle">35°</output></div>
+          <svg id="geometry" viewBox="0 0 600 330" role="img" aria-labelledby="geometry-title geometry-desc"><title id="geometry-title">Two-view contact geometry</title><desc id="geometry-desc">Rotate the second force line using the slider. Parallel lines leave the contact unresolved; transverse lines intersect at the true point.</desc>
+            <defs><pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M30 0H0V30" fill="none" stroke="#dce3df" stroke-width="1"/></pattern><clipPath id="plot-area"><rect x="35" y="20" width="530" height="280" rx="12"/></clipPath></defs>
+            <rect x="35" y="20" width="530" height="280" rx="12" fill="url(#grid)"/>
+            <g clip-path="url(#plot-area)"><ellipse id="ambiguity-ellipse" cx="300" cy="160" rx="84" ry="17" fill="#268d7c" fill-opacity=".1" stroke="#268d7c" stroke-opacity=".25" transform="rotate(-17.5 300 160)"/><line x1="50" y1="160" x2="550" y2="160" stroke="#dd855f" stroke-width="3"/><g id="second-line" transform="rotate(-35 300 160)"><line x1="50" y1="160" x2="550" y2="160" stroke="#238c7c" stroke-width="3"/></g><circle cx="300" cy="160" r="8" fill="#102b30" stroke="#fff" stroke-width="3"/></g>
+            <text x="50" y="145" class="svg-label" fill="#a85534">VIEW 1</text><text id="view2-label" x="479" y="75" class="svg-label" fill="#167665">VIEW 2</text><text x="317" y="186" class="svg-label" fill="#203b3a">CONTACT</text>
+          </svg>
+          <label class="slider-label" for="view-angle">Object-frame force separation <span>0° — 90°</span></label><input id="view-angle" type="range" min="0" max="90" value="35" step="1">
+          <p id="geometry-note" class="geometry-note">Different directions resolve the contact; a wider angle improves conditioning.</p>
+          <p class="small muted">Idealized geometry illustration. The shaded region is schematic, not a measured confidence interval.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="film-section section" id="film" aria-labelledby="film-title"><div class="wrap">
+      <div class="section-intro film-intro"><div><p class="eyebrow">02 / SEE THE MECHANISM</p><h2 id="film-title">A small motion.<br>A different conclusion.</h2></div><p class="lede">The actual MuJoCo trajectory and saved particle distributions, replayed together. Watch the hypotheses spread along a line, then contract around the contact.</p></div>
+      <figure class="film"><video id="demo-video" controls playsinline preload="none" poster="static/images/demo-poster.jpg" aria-describedby="film-caption"><source src="static/videos/apcl-demo.mp4" type="video/mp4"><track kind="captions" src="static/videos/apcl-demo.vtt" srclang="en" label="English">Your browser does not support embedded video. <a href="static/videos/apcl-demo.mp4">Download the MP4</a>.</video><figcaption id="film-caption"><span><strong>18 seconds · MuJoCo FR3 · two views</strong><br>Selected development episode, seed 17. Same initial state and contact; each method chooses its own next orientation. The robot replay shows APCL’s trajectory.</span><a href="static/videos/apcl-demo.mp4" download>Download film <span aria-hidden="true">↓</span></a></figcaption></figure>
+      <div class="film-takeaways"><div><span class="step-index">01</span><h3>Measure</h3><p>One view leaves a direction unresolved.</p></div><div><span class="step-index">02</span><h3>Preserve</h3><p>Recovery restores support along that direction.</p></div><div><span class="step-index">03</span><h3>Move</h3><p>A new orientation adds complementary information.</p></div><div><span class="step-index">04</span><h3>Localize</h3><p>In this episode: 166.3 mm → 3.2 mm error.</p></div></div>
+      <details class="film-details"><summary>How to read this replay</summary><div><p>Coral shows CPF without recovery; mint shows full APCL recovery. The gold dot is the true point and the white cross is the weighted estimate. Each plot uses its own object-frame projection onto the plane of its two force directions, centered on the true contact. Horizontal extent is ±250 mm; vertical extent is ±60 mm. The axis scales differ.</p><p>The motion is slowed and includes holds. Distributions change only at saved posterior snapshots; the film does not interpolate an invented particle trajectory. The box geometry is shown for context but is not given to the estimator. The gold arrow represents an applied point force, not a simulated physical pusher.</p><p>This episode’s trust statistic is 0.3503 (within c ≤ 0.87). It is a selected illustration of the recovery mechanism. The 1,200-trial results below provide aggregate evidence.</p><p><strong>Transcript:</strong> Measure: one view leaves a line of possible contacts. Preserve: restore support along the unobservable direction. Move: reorient the object to gain a new measurement. Localize: use the second view to resolve the remaining ambiguity.</p></div></details>
+    </div></section>
+
+    <section class="section wrap" id="method" aria-labelledby="method-title">
+      <div class="section-intro"><p class="eyebrow">03 / THE METHOD</p><h2 id="method-title">Measure what is observable.<br>Preserve what is not.</h2><p class="lede">APCL combines residual validation, ambiguity-preserving contact inference, and active measurement. The object geometry and contact location are unknown.</p></div>
+      <div class="method-grid"><article><span class="method-number">A</span><h3>Validate the residual</h3><p>Estimate the payload contribution, then check the compensated momentum-observer residual on separate challenge poses.</p><span class="method-tag">Calibration + trust gate</span></article><article><span class="method-number">B</span><h3>Preserve hypotheses</h3><p>Profile out the contact force and maintain contact particles. Recover from loss of support and retain candidates along the force line of action.</p><span class="method-tag">Force-profiled CPF + recovery</span></article><article><span class="method-number">C</span><h3>Choose the next view</h3><p>Score feasible orientations with profile Fisher information. Change orientation while regulating the tool position, then update the estimate.</p><span class="method-tag">Active reorientation</span></article></div>
+      <div class="method-scope"><h3>The claim is about reliable contact hypotheses.</h3><p>The particle filter provides a sequential representation of ambiguous contact locations. A batch re-estimate on the same windows can match its accuracy and give better-calibrated uncertainty. These results do not establish a universal accuracy or speed advantage over batch estimation.</p></div>
+    </section>
+
+    <section class="section results-section" id="results" aria-labelledby="results-title"><div class="wrap">
+      <div class="section-intro"><p class="eyebrow">04 / SIMULATION EVIDENCE</p><h2 id="results-title">Look beyond the median.</h2><p class="lede">The main benefit appears in the error tail and in estimates that look certain but are wrong. The comparison below uses the same 1,200 sampled contact scenarios.</p></div>
+      <div class="results-toolbar"><div class="segmented" role="group" aria-label="Results population"><button type="button" class="active" data-population="all" aria-pressed="true">All 1,200 trials</button><button type="button" data-population="accepted" aria-pressed="false">Within trust gate</button></div><p id="population-note">Recovery study · before gate filtering · 2–5 views</p></div>
+      <div class="result-comparison" aria-live="polite" aria-atomic="true">
+        <div class="result-chart"><div class="chart-heading"><h3>95th-percentile position error</h3><span>Lower is better · mm</span></div><div class="bar-item"><span>CPF / no recovery</span><div class="bar-track"><div class="bar coral" id="p95-none-bar" style="--bar-width:85.975%"></div></div><strong id="p95-none">137.6 <small>mm</small></strong></div><div class="bar-item"><span>APCL</span><div class="bar-track"><div class="bar teal" id="p95-full-bar" style="--bar-width:13.6875%"></div></div><strong id="p95-full">21.9 <small>mm</small></strong></div><div class="bar-axis"><span>0</span><span>80</span><span>160 mm</span></div></div>
+        <div class="result-chart"><div class="chart-heading"><h3>Confident but wrong</h3><span>Lower is better · % of trials</span></div><div class="bar-item"><span>CPF / no recovery</span><div class="bar-track"><div class="bar coral" id="cbw-none-bar" style="--bar-width:58.8889%"></div></div><strong id="cbw-none">17.67<small>%</small></strong></div><div class="bar-item"><span>APCL</span><div class="bar-track"><div class="bar teal" id="cbw-full-bar" style="--bar-width:2.7778%"></div></div><strong id="cbw-full">0.83<small>%</small></strong></div><div class="bar-axis"><span>0</span><span>15</span><span>30%</span></div></div>
+      </div>
+      <div class="table-scroll"><table><caption>Final estimates at adaptive stopping (2–5 views)</caption><thead><tr><th scope="col">Method</th><th scope="col">Median error</th><th scope="col">95th-percentile error</th><th scope="col">Confident but wrong</th><th scope="col">Reported 95% coverage</th></tr></thead><tbody><tr><th scope="row"><i class="legend-dot coral-dot"></i>CPF / no recovery</th><td id="table-none-median">9.2 mm</td><td id="table-none-p95">137.6 mm</td><td id="table-none-cbw">212 / 1,200</td><td id="table-none-coverage">68.5%</td></tr><tr class="highlight-row"><th scope="row"><i class="legend-dot teal-dot"></i>APCL</th><td id="table-full-median">6.6 mm</td><td id="table-full-p95">21.9 mm</td><td id="table-full-cbw">10 / 1,200</td><td id="table-full-coverage">81.9%</td></tr></tbody></table></div>
+      <p class="results-footnote"><strong>Confident but wrong:</strong> reported 95% radius &lt; 10 mm while true position error &gt; 20 mm. Both methods select views actively; the recovery rules differ. The gate subset is a descriptive slice of this study, not a new held-out validation of the gate. <a href="static/data/paired-results.csv" download>Inspect all trial records ↗</a></p>
+      <div class="evidence-caveat"><span aria-hidden="true">↳</span><p><strong>Smaller errors do not yet mean calibrated uncertainty.</strong> APCL’s 81.9% empirical coverage in the full study remains below the reported 95% level. Hardware validation is pending.</p></div>
+    </div></section>
+
+    <section class="section wrap" id="resources" aria-labelledby="resources-title"><div class="section-intro"><p class="eyebrow">05 / EXPLORE THE WORK</p><h2 id="resources-title">Open the experiment.</h2><p class="lede">A simulation snapshot with the code, per-trial measurements, and the exact data behind the film.</p></div>
+      <div class="resource-grid"><a class="resource-card" href="static/downloads/apcl-study-code.zip" download><span class="resource-icon" aria-hidden="true">{ }</span><h3>Study code <span>↗</span></h3><p>The current Python / MuJoCo implementation and experiment runner.</p><span class="resource-meta">SOURCE SNAPSHOT · ZIP</span></a><a class="resource-card" href="static/downloads/apcl-simulation-data.zip" download><span class="resource-icon" aria-hidden="true">↧</span><h3>Simulation data <span>↗</span></h3><p>Paired trial records, aggregate metrics, trajectories, and weighted particle snapshots.</p><span class="resource-meta">CSV + JSON + NPZ · ZIP</span></a><a class="resource-card" href="static/downloads/apcl-project-note.pdf" download><span class="resource-icon" aria-hidden="true">≡</span><h3>Project note <span>↗</span></h3><p>A concise overview of the mechanism, available evidence, and current scope.</p><span class="resource-meta">SIMULATION OVERVIEW · PDF</span></a></div>
+      <div class="scope-grid"><div><h3>Current scope</h3><p>A rigidly grasped payload, a single object-fixed contact point, approximately world-fixed force across views, quasi-static measurement windows, and regulated tool position.</p></div><div><h3>Still to validate</h3><p>Real-robot measurements, independent contact ground truth, and departures from the assumed contact and force model. This page reports simulation results; the manuscript is in preparation.</p></div></div>
+      <details class="provenance"><summary>Data provenance & visual credits</summary><div><p>The main statistics are calculated from <code>claude_try/results/main.jsonl</code> (1,200 paired trials). <a href="static/data/results.json">Machine-readable summary and source hash</a>. The film is a re-run of development seed 17, limited to two views. <a href="static/data/episode.json">Episode metadata and implementation hashes</a>.</p><p>Robot rendered with MuJoCo using Franka FR3 visuals from <a href="https://github.com/google-deepmind/mujoco_menagerie/tree/main/franka_fr3">MuJoCo Menagerie</a>. The visual gripper is a simplified rendering attachment. <a href="static/licenses/FR3-LICENSE.txt">Robot asset license</a>. Page structure inspired by our <a href="https://rcilab.khu.ac.kr/sapc/">SAPC project</a>.</p></div></details>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="wrap footer-inner"><a class="brand" href="#top">APCL<span class="brand-detail">A LINE. THEN A POINT.</span></a><p>Juchan Lee · Sanghyun Kim<br><a href="https://rcilab.khu.ac.kr/">RCI Lab, Kyung Hee University ↗</a></p><a href="mailto:kim87@khu.ac.kr">Contact <span aria-hidden="true">↗</span></a></div></footer>
+</body>
+</html>

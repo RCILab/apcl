@@ -1,0 +1,17 @@
+WEBVTT
+
+00:00.000 --> 00:04.000
+One view leaves a line of possible contacts.
+Particles can lose support at the true contact.
+
+00:04.000 --> 00:07.000
+APCL restores support along the unresolved direction.
+The true contact is marked in gold.
+
+00:07.000 --> 00:13.300
+The robot reorients the grasped object.
+A second view supplies new information.
+
+00:13.300 --> 00:18.000
+Two-view error in this selected episode:
+No recovery: 166.3 mm. APCL: 3.2 mm.

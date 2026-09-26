@@ -1,0 +1,52 @@
+{
+  "source": "claude_try/results/main.jsonl",
+  "sha256": "f5028492078b81dde049b0368eb7ecc02fbe2085f148dcda7c36c8bb13f4a45c",
+  "scope": "Paired simulation recovery study; full set is before trust-gate filtering.",
+  "gate": {
+    "threshold": 0.87,
+    "comparison": "<=",
+    "accepted": 556,
+    "total": 1200
+  },
+  "definitions": {
+    "cbw": "reported 95% radius < 10 mm AND position error > 20 mm",
+    "coverage": "true position falls within the reported 95% radius",
+    "final": "adaptive stopping, minimum 2 and maximum 5 views"
+  },
+  "all": {
+    "none": {
+      "n": 1200,
+      "median_mm": 9.171640055847122,
+      "p95_mm": 137.5603970670698,
+      "cbw_count": 212,
+      "cbw_pct": 17.666666666666668,
+      "coverage_pct": 68.5
+    },
+    "full": {
+      "n": 1200,
+      "median_mm": 6.597589702205113,
+      "p95_mm": 21.87255988929896,
+      "cbw_count": 10,
+      "cbw_pct": 0.8333333333333334,
+      "coverage_pct": 81.91666666666667
+    }
+  },
+  "accepted": {
+    "none": {
+      "n": 556,
+      "median_mm": 8.706864165745035,
+      "p95_mm": 150.31253174274627,
+      "cbw_count": 139,
+      "cbw_pct": 25.0,
+      "coverage_pct": 64.38848920863309
+    },
+    "full": {
+      "n": 556,
+      "median_mm": 5.208021540990853,
+      "p95_mm": 15.847314474302799,
+      "cbw_count": 2,
+      "cbw_pct": 0.3597122302158274,
+      "coverage_pct": 84.71223021582733
+    }
+  }
+}
