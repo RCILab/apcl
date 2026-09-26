@@ -1,17 +1,17 @@
 WEBVTT
 
 00:00.000 --> 00:04.000
-One view leaves a line of possible contacts.
-Particles can lose support at the true contact.
+Left: CPF. Right: APCL. Gold marks the true contact.
+Colored diamonds show each contact estimate.
 
 00:04.000 --> 00:07.000
 APCL restores support along the unresolved direction.
 The true contact is marked in gold.
 
 00:07.000 --> 00:13.300
-The robot reorients the grasped object.
+Each robot follows its own recorded reorientation.
 A second view supplies new information.
 
 00:13.300 --> 00:18.000
-Two-view error in this selected episode:
-No recovery: 166.3 mm. APCL: 3.2 mm.
+Coral estimate: 166.3 mm from the true contact.
+Mint estimate: 3.2 mm from the true contact.

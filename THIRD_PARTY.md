@@ -8,7 +8,9 @@ The original visual meshes are downloaded into `.build/franka_fr3/assets/` for r
 they are not included in the static website bundle. The video credits identify this source.
 
 The visualization uses the study's kinematic transforms, adds original primitive geometry
-for the gripper and grasped box, and replays the captured joint positions. Lighting, floor,
+for the gripper and grasped box, and replays two independent sets of captured joint positions.
+Two copies of the robot are translated apart for comparison, with contact estimates projected
+from their actual tool-frame coordinates. Marker symbols are enlarged for visibility. Lighting, floor,
 force arrows, snapshot plots, labels and composition are project visualization additions.
 The rendered box geometry is unavailable to the estimator.
 

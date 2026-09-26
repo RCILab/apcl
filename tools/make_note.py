@@ -35,9 +35,10 @@ def main():
     Empirical coverage is below the nominal 95% level; uncertainty calibration remains incomplete.</p>
     <h3>What the film shows</h3>
     <p>Development seed 17, rerun for two views: 166.3 mm error without recovery and 3.2 mm with APCL.
-    The film replays the recorded APCL joint trajectory and saved posterior snapshots.
-    Each variant selects its own next orientation. The trajectory is slowed and includes holds;
-    particle motion between saved snapshots is not synthesized.</p>
+    Two robots replay their own recorded trajectories: CPF on the left, APCL on the right.
+    Colored diamonds show the weighted contact estimates; gold dots show the true contacts.
+    Each variant selects its own next orientation. 3D positions are to scale, with enlarged
+    markers for visibility. Motion is slowed; estimates update only at saved snapshots.</p>
     <h3>Scope and limitations</h3>
     <p>The simulation uses a rigidly grasped payload, one object-fixed contact point,
     an approximately world-fixed applied force, quasi-static measurement windows,
